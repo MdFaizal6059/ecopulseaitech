@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEco } from "@/lib/eco/store";
 import { Sidebar, MobileNav } from "@/components/eco/Sidebar";
 import { Dashboard } from "@/components/eco/Dashboard";
@@ -11,9 +11,11 @@ import { Leaderboard } from "@/components/eco/Leaderboard";
 import { Onboarding } from "@/components/eco/Onboarding";
 import { DevPanel } from "@/components/eco/DevPanel";
 import { SubmissionPortal } from "@/components/eco/SubmissionPortal";
+import { ProfileDialog } from "@/components/eco/ProfileDialog";
 import type { ViewKey } from "@/components/eco/types";
+import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "EcoPulse AI — Carbon Footprint Awareness Platform" },
@@ -24,9 +26,20 @@ export const Route = createFileRoute("/")({
 });
 
 function App() {
-  const { state } = useEco();
+  const { state, updateProfile } = useEco();
   const [view, setView] = useState<ViewKey>("dashboard");
   const [submission, setSubmission] = useState(false);
+  const [profile, setProfile] = useState(false);
+
+  // Hydrate name/avatar from the signed-in profile
+  useEffect(() => {
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) return;
+      const { data: p } = await supabase.from("profiles").select("full_name, avatar").eq("id", u.user.id).maybeSingle();
+      if (p) updateProfile({ name: p.full_name || "Eco Explorer", avatar: p.avatar || "🌱" });
+    })();
+  }, [updateProfile]);
 
   return (
     <div className="relative min-h-screen bg-[#0B132B] text-foreground">
@@ -36,7 +49,7 @@ function App() {
       </div>
 
       <div className="relative flex w-full">
-        <Sidebar active={view} onChange={setView} onSettings={() => setSubmission(true)} />
+        <Sidebar active={view} onChange={setView} onSettings={() => setProfile(true)} onSubmission={() => setSubmission(true)} />
         <main className="flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10">
           <div className="mx-auto max-w-6xl">
             {view === "dashboard" && <Dashboard />}
@@ -51,6 +64,7 @@ function App() {
 
       <MobileNav active={view} onChange={setView} />
       <DevPanel />
+      <ProfileDialog open={profile} onOpenChange={setProfile} />
       <SubmissionPortal open={submission} onOpenChange={setSubmission} />
       {!state.profile.onboarded && <Onboarding />}
     </div>
