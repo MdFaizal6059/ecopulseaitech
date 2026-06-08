@@ -13,7 +13,7 @@ import { DevPanel } from "@/components/eco/DevPanel";
 import { SubmissionPortal } from "@/components/eco/SubmissionPortal";
 import type { ViewKey } from "@/components/eco/types";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "EcoPulse AI — Carbon Footprint Awareness Platform" },
