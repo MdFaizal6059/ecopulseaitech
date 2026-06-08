@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Toaster } from "../components/ui/sonner";
+import { EcoProvider } from "../lib/eco/store";
 
 function NotFoundComponent() {
   return (
@@ -77,14 +79,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "EcoPulse AI — Carbon Footprint Awareness Platform" },
+      { name: "description", content: "Track, gamify, and reduce your carbon footprint with real-time analytics, AI-powered logging, eco-quests, and a global leaderboard." },
+      { name: "author", content: "EcoPulse AI" },
+      { property: "og:title", content: "EcoPulse AI — Carbon Footprint Awareness" },
+      { property: "og:description", content: "Real-time carbon tracking, eco-quests, and rewards. Built for PromptWars Challenge 3." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
@@ -101,11 +102,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-slate-950 text-foreground antialiased">
         {children}
         <Scripts />
       </body>
@@ -118,8 +119,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <EcoProvider>
+        <Outlet />
+        <Toaster />
+      </EcoProvider>
     </QueryClientProvider>
   );
 }
