@@ -1,4 +1,4 @@
-import { LayoutDashboard, PlusCircle, BarChart3, Trophy, Gift, Crown, Leaf, Settings } from "lucide-react";
+import { LayoutDashboard, PlusCircle, BarChart3, Trophy, Gift, Crown, Leaf, User, Award } from "lucide-react";
 import { useEco } from "@/lib/eco/store";
 import type { ViewKey } from "./types";
 
@@ -11,7 +11,7 @@ const items: { key: ViewKey; label: string; icon: React.ComponentType<{ classNam
   { key: "leaderboard", label: "Leaderboard", icon: Crown },
 ];
 
-export function Sidebar({ active, onChange, onSettings }: { active: ViewKey; onChange: (k: ViewKey) => void; onSettings: () => void }) {
+export function Sidebar({ active, onChange, onSettings, onSubmission }: { active: ViewKey; onChange: (k: ViewKey) => void; onSettings: () => void; onSubmission: () => void }) {
   const { state } = useEco();
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-white/5 bg-white/[0.02] p-4 backdrop-blur-xl md:flex md:flex-col">
@@ -47,14 +47,21 @@ export function Sidebar({ active, onChange, onSettings }: { active: ViewKey; onC
       </nav>
 
       <button
+        onClick={onSubmission}
+        className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-all hover:bg-white/[0.04] hover:text-foreground"
+      >
+        <Award className="h-4 w-4" />
+        Submission Portal
+      </button>
+      <button
         onClick={onSettings}
         className="mb-2 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-all hover:bg-white/[0.04] hover:text-foreground"
       >
-        <Settings className="h-4 w-4" />
-        Settings
+        <User className="h-4 w-4" />
+        Account & profile
       </button>
 
-      <div className="rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-3">
+      <button onClick={onSettings} className="rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-3 text-left transition-all hover:border-emerald-400/30">
         <div className="flex items-center gap-2">
           <div className="text-2xl">{state.profile.avatar}</div>
           <div className="min-w-0">
@@ -64,7 +71,7 @@ export function Sidebar({ active, onChange, onSettings }: { active: ViewKey; onC
             </div>
           </div>
         </div>
-      </div>
+      </button>
     </aside>
   );
 }
