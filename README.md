@@ -9,8 +9,8 @@
 For evaluation verification under **PromptWars Virtual: Main Challenge 3**, please use the direct production endpoints below:
 
 * **⚡ Live Web Deployment:** [ecopulseaitech.lovable.app](ecopulseaitech.lovable.app)
-* **💻 Public GitHub Repository:** [https://github.com/mohammedfaizal-m/ecopulse-ai](https://github.com/mohammedfaizal-m/ecopulse-ai)
-* **👔 LinkedIn Build Journey Documentation:** [https://www.linkedin.com/posts/mohammedfaizal-m_promptwars-challenge3-build](https://www.linkedin.com/posts/mohammedfaizal-m_promptwars-challenge3-build)
+* **💻 Public GitHub Repository:** [https://github.com/MdFaizal6059/ecopulseaitech/tree/main](https://github.com/MdFaizal6059/ecopulseaitech/tree/main)
+* **👔 LinkedIn Build Journey Documentation:** [https://www.linkedin.com/posts/mohammed-faizal-m-b3242b311_promptwars-hack2skill-googleai-ugcPost-7470117622022422528-VY3g](https://www.linkedin.com/posts/mohammed-faizal-m-b3242b311_promptwars-hack2skill-googleai-ugcPost-7470117622022422528-VY3g)
 
 ---
 
