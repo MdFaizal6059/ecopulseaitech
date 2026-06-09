@@ -5,9 +5,11 @@ import { Progress } from "@/components/ui/progress";
 import { useEco } from "@/lib/eco/store";
 import { Confetti } from "./Confetti";
 import { toast } from "sonner";
+import { badgeMeta, upcomingMilestones } from "@/lib/eco/badges";
+import { Lock } from "lucide-react";
 
 export function Quests() {
-  const { state, completeQuest, setState } = useEco();
+  const { state, completeQuest, setState, redeemedCount } = useEco();
   const [confetti, setConfetti] = useState(0);
 
   const advance = (id: string) => {
@@ -29,7 +31,13 @@ export function Quests() {
     toast.success(`Quest complete: ${q.title}`, { description: `+${q.xp} XP · +${q.credits} credits` });
   };
 
-  const grouped = { daily: state.quests.filter(q => q.cadence === "daily"), weekly: state.quests.filter(q => q.cadence === "weekly"), monthly: state.quests.filter(q => q.cadence === "monthly") };
+  const grouped = {
+    daily: state.quests.filter(q => q.cadence === "daily"),
+    weekly: state.quests.filter(q => q.cadence === "weekly"),
+    monthly: state.quests.filter(q => q.cadence === "monthly"),
+  };
+
+  const upcoming = upcomingMilestones(state, redeemedCount);
 
   return (
     <div className="space-y-6">
@@ -80,18 +88,48 @@ export function Quests() {
       ))}
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Badges</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {state.badges.map((b) => (
-            <Card key={b.id} className={`p-4 text-center ${b.unlocked ? "border-emerald-400/40 bg-emerald-500/5" : "border-white/10 bg-white/[0.02] opacity-60"}`}>
-              <div className="text-4xl">{b.emoji}</div>
-              <div className="mt-2 text-sm font-semibold text-foreground">{b.name}</div>
-              <div className="text-[11px] text-muted-foreground">{b.criteria}</div>
-              <div className={`mt-2 text-[10px] uppercase tracking-widest ${b.unlocked ? "text-emerald-400" : "text-muted-foreground"}`}>
-                {b.unlocked ? "Unlocked" : "Locked"}
-              </div>
-            </Card>
-          ))}
+        <div className="flex items-end justify-between">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Stickers &amp; Badges</h2>
+            <p className="mt-1 text-xs text-muted-foreground">Earn illustrated milestone badges as you reduce your footprint.</p>
+          </div>
+          {upcoming[0] && (
+            <div className="hidden text-right text-[11px] text-muted-foreground md:block">
+              Next up: <span className="text-emerald-300">{upcoming[0].meta.name}</span>
+            </div>
+          )}
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {state.badges.map((b) => {
+            const meta = badgeMeta(b.id);
+            if (!meta) return null;
+            return (
+              <Card key={b.id} className={`relative overflow-hidden p-4 text-center transition-all ${b.unlocked ? "border-emerald-400/40 bg-gradient-to-br from-emerald-500/10 to-cyan-500/5" : "border-white/10 bg-white/[0.02]"}`}>
+                <div className="relative mx-auto flex h-24 w-24 items-center justify-center">
+                  <img
+                    src={meta.artUrl}
+                    alt={meta.name}
+                    width={1024}
+                    height={1024}
+                    loading="lazy"
+                    className={`h-full w-full object-contain transition-all ${b.unlocked ? "drop-shadow-[0_8px_20px_rgba(16,185,129,0.35)]" : "opacity-30 grayscale"}`}
+                  />
+                  {!b.unlocked && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-slate-950/80 backdrop-blur">
+                        <Lock className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-3 text-sm font-semibold text-foreground">{meta.name}</div>
+                <div className="mt-1 text-[11px] text-muted-foreground">{meta.criteria}</div>
+                <div className={`mt-2 text-[10px] uppercase tracking-widest ${b.unlocked ? "text-emerald-400" : "text-muted-foreground"}`}>
+                  {b.unlocked ? "Unlocked" : "Locked"}
+                </div>
+              </Card>
+            );
+          })}
         </div>
       </section>
     </div>

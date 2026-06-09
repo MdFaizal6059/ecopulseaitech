@@ -2,20 +2,35 @@ import { useMemo } from "react";
 import { useEco } from "@/lib/eco/store";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Leaf, TrendingDown, TrendingUp, Zap, Sprout, Smartphone, Car as CarIcon, UtensilsCrossed } from "lucide-react";
-import { GLOBAL_AVG_TONS, US_AVG_TONS, equivalencies, totalByCategory, totalByDay, totalEmissionsKg, xpToNextLevel } from "@/lib/eco/calc";
+import { Button } from "@/components/ui/button";
+import { Leaf, TrendingDown, TrendingUp, Zap, Sprout, Smartphone, Car as CarIcon, UtensilsCrossed, Flame } from "lucide-react";
+import { GLOBAL_AVG_TONS, US_AVG_TONS, equivalencies, totalByDay, totalEmissionsKg, xpToNextLevel } from "@/lib/eco/calc";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { AIAssistant } from "./AIAssistant";
+import { badgeMeta, upcomingMilestones } from "@/lib/eco/badges";
+import { useServerFn } from "@tanstack/react-start";
+import { sendNotification } from "@/lib/notifications/email.functions";
+import { toast } from "sonner";
 
 export function Dashboard() {
-  const { state } = useEco();
+  const { state, redeemedCount } = useEco();
   const last7 = useMemo(() => totalByDay(state.activities, 7), [state.activities]);
   const last30 = useMemo(() => totalByDay(state.activities, 30), [state.activities]);
-  const monthly = useMemo(() => totalEmissionsKg(state.activities.filter(a => a.timestamp > Date.now() - 30*86400000)), [state.activities]);
+  const monthly = useMemo(() => totalEmissionsKg(state.activities.filter(a => a.timestamp > Date.now() - 30 * 86400000)), [state.activities]);
   const baselineMonthly = (state.profile.baselineAnnualTons * 1000) / 12;
   const savedThisMonth = Math.max(0, baselineMonthly - monthly);
   const eq = equivalencies(savedThisMonth);
   const xp = xpToNextLevel(state.profile.xp);
+  const upcoming = upcomingMilestones(state, redeemedCount);
+
+  const send = useServerFn(sendNotification);
+  const protectStreak = async () => {
+    const t = toast.loading("Sending streak reminder…");
+    const res = await send({ data: { kind: "streak_reminder", data: { streak: state.profile.streak } } });
+    toast.dismiss(t);
+    if (res.ok) toast.success("Reminder sent to your inbox 📬");
+    else toast.error("Couldn't send email", { description: res.error });
+  };
 
   const weeklyDelta = useMemo(() => {
     const thisWeek = last7.reduce((s, d) => s + d.total, 0);
@@ -30,13 +45,18 @@ export function Dashboard() {
           <div className="text-xs uppercase tracking-widest text-emerald-400/70">Welcome back, {state.profile.name}</div>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">Your carbon pulse</h1>
         </div>
-        <div className="flex items-center gap-4 text-xs">
+        <div className="flex items-center gap-2 text-xs">
           <div className="flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1.5 text-amber-300">
             🔥 {state.profile.streak}-day streak
           </div>
           <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-emerald-300">
             💎 {state.profile.tier} tier
           </div>
+          {state.profile.streak > 0 && (
+            <Button size="sm" onClick={protectStreak} variant="outline" className="h-7 gap-1.5 border-amber-400/30 bg-amber-400/5 text-amber-200 hover:bg-amber-400/10">
+              <Flame className="h-3.5 w-3.5" /> Protect streak
+            </Button>
+          )}
         </div>
       </div>
 
@@ -100,6 +120,33 @@ export function Dashboard() {
         </Card>
       </div>
 
+      {/* Milestones rail */}
+      {upcoming.length > 0 && (
+        <Card className="border-white/10 bg-white/[0.02] p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <div className="text-xs uppercase tracking-widest text-muted-foreground">Next milestones</div>
+              <div className="mt-1 text-lg font-semibold text-foreground">Badges within reach</div>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {upcoming.map(({ meta, current, pct }) => (
+              <div key={meta.id} className="flex gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+                <img src={meta.artUrl} alt={meta.name} width={1024} height={1024} loading="lazy" className="h-14 w-14 shrink-0 object-contain opacity-60" />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-semibold text-foreground">{meta.name}</div>
+                  <div className="mt-0.5 truncate text-[11px] text-muted-foreground">{meta.criteria}</div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Progress value={pct} className="h-1.5 flex-1 bg-white/5" />
+                    <span className="text-[10px] tabular-nums text-muted-foreground">{current}/{meta.milestone.threshold}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <div className="grid gap-4 lg:grid-cols-3">
         <ComparisonCard label="You" value={state.profile.baselineAnnualTons} tone="emerald" />
         <ComparisonCard label="Global avg" value={GLOBAL_AVG_TONS} tone="cyan" />
@@ -131,22 +178,34 @@ export function Dashboard() {
           <div className="text-sm font-semibold text-foreground">Recent activity</div>
           <Zap className="h-4 w-4 text-emerald-400" />
         </div>
-        <ul className="divide-y divide-white/5">
-          {state.activities.slice(0, 6).map((a) => (
-            <li key={a.id} className="flex items-center justify-between py-2.5">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">{iconFor(a.category)}</span>
-                <div>
-                  <div className="text-sm text-foreground">{a.label}</div>
-                  <div className="text-[11px] text-muted-foreground">{new Date(a.timestamp).toLocaleString()}</div>
+        {state.activities.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-white/10 bg-white/[0.02] p-8 text-center">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300">
+              <Sprout className="h-5 w-5" />
+            </div>
+            <div className="mt-3 text-sm font-medium text-foreground">No activities yet</div>
+            <p className="mx-auto mt-1 max-w-xs text-xs text-muted-foreground">
+              Log a trip, meal, or kWh to see your dashboard, analytics, and leaderboard come to life.
+            </p>
+          </div>
+        ) : (
+          <ul className="divide-y divide-white/5">
+            {state.activities.slice(0, 6).map((a) => (
+              <li key={a.id} className="flex items-center justify-between py-2.5">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">{iconFor(a.category)}</span>
+                  <div>
+                    <div className="text-sm text-foreground">{a.label}</div>
+                    <div className="text-[11px] text-muted-foreground">{new Date(a.timestamp).toLocaleString()}</div>
+                  </div>
                 </div>
-              </div>
-              <span className={`text-sm font-medium ${a.co2eKg > 2 ? "text-rose-300" : a.co2eKg > 0.5 ? "text-amber-300" : "text-emerald-300"}`}>
-                {a.co2eKg.toFixed(2)} kg
-              </span>
-            </li>
-          ))}
-        </ul>
+                <span className={`text-sm font-medium ${a.co2eKg > 2 ? "text-rose-300" : a.co2eKg > 0.5 ? "text-amber-300" : "text-emerald-300"}`}>
+                  {a.co2eKg.toFixed(2)} kg
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
     </div>
   );

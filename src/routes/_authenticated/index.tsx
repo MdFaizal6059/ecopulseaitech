@@ -12,8 +12,14 @@ import { Onboarding } from "@/components/eco/Onboarding";
 import { DevPanel } from "@/components/eco/DevPanel";
 import { SubmissionPortal } from "@/components/eco/SubmissionPortal";
 import { ProfileDialog } from "@/components/eco/ProfileDialog";
+import { BadgeUnlockedDialog } from "@/components/eco/BadgeUnlockedDialog";
 import type { ViewKey } from "@/components/eco/types";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { sendNotification } from "@/lib/notifications/email.functions";
+import { badgeMeta } from "@/lib/eco/badges";
+
+const WELCOME_KEY = "ecopulse:welcomed";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
@@ -26,20 +32,39 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 function App() {
-  const { state, updateProfile } = useEco();
+  const { state, updateProfile, acknowledgeUnlock } = useEco();
   const [view, setView] = useState<ViewKey>("dashboard");
   const [submission, setSubmission] = useState(false);
   const [profile, setProfile] = useState(false);
+  const send = useServerFn(sendNotification);
 
-  // Hydrate name/avatar from the signed-in profile
+  // Hydrate name/avatar from the signed-in profile and send welcome email once
   useEffect(() => {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) return;
       const { data: p } = await supabase.from("profiles").select("full_name, avatar").eq("id", u.user.id).maybeSingle();
       if (p) updateProfile({ name: p.full_name || "Eco Explorer", avatar: p.avatar || "🌱" });
+
+      try {
+        const key = `${WELCOME_KEY}:${u.user.id}`;
+        if (typeof window !== "undefined" && !localStorage.getItem(key)) {
+          localStorage.setItem(key, "1");
+          send({ data: { kind: "welcome" } }).catch(() => {});
+        }
+      } catch {}
     })();
-  }, [updateProfile]);
+  }, [updateProfile, send]);
+
+  // Fire badge_unlocked email when a new unlock is queued (fire-and-forget; UI dialog handled separately)
+  useEffect(() => {
+    const id = state.pendingUnlocks[0];
+    if (!id) return;
+    const meta = badgeMeta(id);
+    if (!meta) { acknowledgeUnlock(); return; }
+    send({ data: { kind: "badge_unlocked", data: { name: meta.name, description: meta.description } } }).catch(() => {});
+    // Don't auto-acknowledge — dialog will when user dismisses
+  }, [state.pendingUnlocks, send, acknowledgeUnlock]);
 
   return (
     <div className="relative min-h-screen bg-[#0B132B] text-foreground">
@@ -66,6 +91,7 @@ function App() {
       <DevPanel />
       <ProfileDialog open={profile} onOpenChange={setProfile} />
       <SubmissionPortal open={submission} onOpenChange={setSubmission} />
+      <BadgeUnlockedDialog />
       {!state.profile.onboarded && <Onboarding />}
     </div>
   );
