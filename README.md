@@ -8,7 +8,7 @@
 
 For evaluation verification under **PromptWars Virtual: Main Challenge 3**, please use the direct production endpoints below:
 
-* **⚡ Live Web Deployment:** [https://ecopulse-ai.vercel.app](https://ecopulse-ai.vercel.app)
+* **⚡ Live Web Deployment:** [ecopulseaitech.lovable.app](ecopulseaitech.lovable.app)
 * **💻 Public GitHub Repository:** [https://github.com/mohammedfaizal-m/ecopulse-ai](https://github.com/mohammedfaizal-m/ecopulse-ai)
 * **👔 LinkedIn Build Journey Documentation:** [https://www.linkedin.com/posts/mohammedfaizal-m_promptwars-challenge3-build](https://www.linkedin.com/posts/mohammedfaizal-m_promptwars-challenge3-build)
 
