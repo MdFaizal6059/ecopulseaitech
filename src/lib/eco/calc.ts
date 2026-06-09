@@ -1,7 +1,6 @@
 import type {
   Activity,
   AppState,
-  Badge,
   DietType,
   LeaderboardEntry,
   Quest,
@@ -10,6 +9,7 @@ import type {
   TransportMode,
   UserProfile,
 } from "./types";
+import { defaultBadges } from "./badges";
 
 // Emission factors (kg CO2e per unit)
 export const TRANSPORT_EF: Record<TransportMode, number> = {
@@ -28,7 +28,7 @@ export const DIET_EF: Record<DietType, number> = {
 };
 
 export const ENERGY_EF = 0.42; // kg CO2e per kWh
-export const WATER_EF = 0.34; // kg CO2e per m3
+export const WATER_EF = 0.34;
 
 // Baselines (annual tons)
 export const US_AVG_TONS = 16.0;
@@ -59,66 +59,13 @@ export function calcBaseline(
   shopping: UserProfile["shopping"],
 ): number {
   const housingTons = housing === "small" ? 2 : housing === "medium" ? 4 : 7;
-  const dietTons = DIET_EF[diet] * 365 * 0.001 * 1.5; // rough annual
+  const dietTons = DIET_EF[diet] * 365 * 0.001 * 1.5;
   const commuteTons = (TRANSPORT_EF[commute] * 30 * 365) / 1000;
   const shoppingTons = shopping === "low" ? 1 : shopping === "medium" ? 2.5 : 5;
   return +(housingTons + dietTons + commuteTons + shoppingTons).toFixed(2);
 }
 
 const id = () => Math.random().toString(36).slice(2, 10);
-
-export function generateMockHistory(): Activity[] {
-  const out: Activity[] = [];
-  const now = Date.now();
-  const day = 86400000;
-  const modes: TransportMode[] = ["ice", "public", "ev", "bike", "ice", "public"];
-  const diets: DietType[] = ["heavy-meat", "low-meat", "vegetarian", "vegan", "low-meat", "low-meat"];
-
-  for (let d = 30; d >= 1; d--) {
-    const t = now - d * day;
-    // transport
-    const mode = modes[d % modes.length];
-    const km = 5 + Math.round(Math.random() * 25);
-    out.push({
-      id: id(),
-      category: "transport",
-      label: `${km}km ${labelMode(mode)}`,
-      co2eKg: +(km * TRANSPORT_EF[mode]).toFixed(2),
-      timestamp: t,
-      meta: { mode, km },
-    });
-    // diet
-    const diet = diets[d % diets.length];
-    out.push({
-      id: id(),
-      category: "diet",
-      label: `${labelDiet(diet)} meals`,
-      co2eKg: +(DIET_EF[diet] * 2.5).toFixed(2),
-      timestamp: t + 3600_000,
-      meta: { diet },
-    });
-    // energy
-    const kwh = 6 + Math.round(Math.random() * 12);
-    out.push({
-      id: id(),
-      category: "energy",
-      label: `${kwh} kWh home energy`,
-      co2eKg: +(kwh * ENERGY_EF).toFixed(2),
-      timestamp: t + 7200_000,
-      meta: { kwh },
-    });
-    if (d % 4 === 0) {
-      out.push({
-        id: id(),
-        category: "shopping",
-        label: "Online order",
-        co2eKg: +(2 + Math.random() * 4).toFixed(2),
-        timestamp: t + 9000_000,
-      });
-    }
-  }
-  return out.sort((a, b) => b.timestamp - a.timestamp);
-}
 
 export function labelMode(m: TransportMode): string {
   return { ev: "EV drive", ice: "car drive", public: "transit", bike: "cycling", walk: "walking" }[m];
@@ -130,24 +77,11 @@ export function labelDiet(d: DietType): string {
 export function defaultQuests(): Quest[] {
   return [
     { id: "q1", title: "Meatless Monday", description: "Log a vegan or vegetarian meal today", cadence: "daily", xp: 50, credits: 20, target: 1, progress: 0, completed: false, icon: "🥗" },
-    { id: "q2", title: "Zero-Emission Commute", description: "Take 3 bike/walk/transit trips this week", cadence: "weekly", xp: 150, credits: 60, target: 3, progress: 1, completed: false, icon: "🚲" },
-    { id: "q3", title: "Phantom Power Purge", description: "Stay under 8 kWh for 5 days", cadence: "weekly", xp: 200, credits: 80, target: 5, progress: 2, completed: false, icon: "🔌" },
-    { id: "q4", title: "EV Evangelist", description: "Log 10 EV/transit trips this month", cadence: "monthly", xp: 400, credits: 200, target: 10, progress: 4, completed: false, icon: "⚡" },
+    { id: "q2", title: "Zero-Emission Commute", description: "Take 3 bike/walk/transit trips this week", cadence: "weekly", xp: 150, credits: 60, target: 3, progress: 0, completed: false, icon: "🚲" },
+    { id: "q3", title: "Phantom Power Purge", description: "Stay under 8 kWh for 5 days", cadence: "weekly", xp: 200, credits: 80, target: 5, progress: 0, completed: false, icon: "🔌" },
+    { id: "q4", title: "EV Evangelist", description: "Log 10 EV/transit trips this month", cadence: "monthly", xp: 400, credits: 200, target: 10, progress: 0, completed: false, icon: "⚡" },
     { id: "q5", title: "Hydro Hero", description: "Cut water usage 3 days in a row", cadence: "weekly", xp: 120, credits: 40, target: 3, progress: 0, completed: false, icon: "💧" },
-    { id: "q6", title: "Solar Sovereign", description: "30 days of below-baseline emissions", cadence: "monthly", xp: 800, credits: 400, target: 30, progress: 12, completed: false, icon: "☀️" },
-  ];
-}
-
-export function defaultBadges(): Badge[] {
-  return [
-    { id: "b1", name: "First Step", description: "Log your first activity", emoji: "🌱", unlocked: true, criteria: "Log 1 activity" },
-    { id: "b2", name: "Green Gladiator", description: "Complete 5 quests", emoji: "🛡️", unlocked: false, criteria: "Complete 5 quests" },
-    { id: "b3", name: "Solar Sovereign", description: "30 days below baseline", emoji: "☀️", unlocked: false, criteria: "30-day clean streak" },
-    { id: "b4", name: "EV Evangelist", description: "Log 20 EV trips", emoji: "⚡", unlocked: false, criteria: "20 EV trips" },
-    { id: "b5", name: "Plant Pioneer", description: "10 vegan meals logged", emoji: "🌿", unlocked: true, criteria: "10 vegan meals" },
-    { id: "b6", name: "Hydro Hero", description: "Save 1000L of water", emoji: "💧", unlocked: false, criteria: "Save 1000L water" },
-    { id: "b7", name: "Diamond Dynamo", description: "Reach Diamond tier", emoji: "💎", unlocked: false, criteria: "Prevent 500kg CO2e" },
-    { id: "b8", name: "Streak Sultan", description: "30 day green streak", emoji: "🔥", unlocked: false, criteria: "30 day streak" },
+    { id: "q6", title: "Solar Sovereign", description: "30 days of below-baseline emissions", cadence: "monthly", xp: 800, credits: 400, target: 30, progress: 0, completed: false, icon: "☀️" },
   ];
 }
 
@@ -164,32 +98,22 @@ export function defaultRewards(): Reward[] {
   ];
 }
 
-export function defaultLeaderboard(): LeaderboardEntry[] {
-  const entries: LeaderboardEntry[] = [
-    { id: "u1", name: "Aria Chen", avatar: "🦊", prevented: 612, streak: 41, tier: "Diamond" },
-    { id: "u2", name: "Kai Patel", avatar: "🐼", prevented: 489, streak: 28, tier: "Emerald" },
-    { id: "u3", name: "Luna Rivera", avatar: "🦋", prevented: 410, streak: 22, tier: "Emerald" },
-    { id: "u4", name: "Mateo Silva", avatar: "🦅", prevented: 318, streak: 17, tier: "Emerald" },
-    { id: "u5", name: "Zara Okafor", avatar: "🌸", prevented: 276, streak: 31, tier: "Emerald" },
-    { id: "you", name: "You", avatar: "🌟", prevented: 187, streak: 7, tier: "Gold", isYou: true },
-    { id: "u6", name: "Jin Park", avatar: "🐉", prevented: 152, streak: 9, tier: "Gold" },
-    { id: "u7", name: "Noah Berg", avatar: "🦊", prevented: 124, streak: 12, tier: "Gold" },
-    { id: "u8", name: "Sana Yusuf", avatar: "🌺", prevented: 88, streak: 4, tier: "Silver" },
-    { id: "u9", name: "Theo Park", avatar: "🐢", prevented: 61, streak: 6, tier: "Silver" },
+export function defaultLeaderboard(profileName = "You", avatar = "🌱"): LeaderboardEntry[] {
+  return [
+    { id: "you", name: profileName, avatar, prevented: 0, streak: 0, tier: "Bronze", isYou: true },
   ];
-  return entries.sort((a, b) => b.prevented - a.prevented);
 }
 
 export function defaultProfile(): UserProfile {
   return {
     name: "You",
-    avatar: "🌟",
-    baselineAnnualTons: 12.4,
-    xp: 1280,
-    level: levelFor(1280),
-    credits: 640,
-    streak: 7,
-    tier: "Gold",
+    avatar: "🌱",
+    baselineAnnualTons: 0,
+    xp: 0,
+    level: 1,
+    credits: 0,
+    streak: 0,
+    tier: "Bronze",
     onboarded: false,
     housing: "medium",
     diet: "low-meat",
@@ -201,11 +125,12 @@ export function defaultProfile(): UserProfile {
 export function defaultState(): AppState {
   return {
     profile: defaultProfile(),
-    activities: generateMockHistory(),
+    activities: [],
     quests: defaultQuests(),
     badges: defaultBadges(),
     rewards: defaultRewards(),
     leaderboard: defaultLeaderboard(),
+    pendingUnlocks: [],
   };
 }
 
@@ -215,7 +140,6 @@ export function parseNaturalLanguage(text: string): Activity[] {
   const acts: Activity[] = [];
   const now = Date.now();
 
-  // Transport
   const kmMatch = lower.match(/(\d+(?:\.\d+)?)\s*(?:km|kilometers?|miles?|mi)\b/);
   if (kmMatch) {
     const num = parseFloat(kmMatch[1]);
@@ -236,7 +160,6 @@ export function parseNaturalLanguage(text: string): Activity[] {
     });
   }
 
-  // Diet
   let diet: DietType | null = null;
   if (/vegan/.test(lower)) diet = "vegan";
   else if (/vegetarian|veggie/.test(lower)) diet = "vegetarian";
@@ -254,7 +177,6 @@ export function parseNaturalLanguage(text: string): Activity[] {
     });
   }
 
-  // Energy
   const kwhMatch = lower.match(/(\d+(?:\.\d+)?)\s*kwh/);
   if (kwhMatch) {
     const kwh = parseFloat(kwhMatch[1]);
@@ -304,9 +226,11 @@ export function totalEmissionsKg(activities: Activity[]) {
 
 // Equivalencies
 export function equivalencies(kgSaved: number) {
-  const trees = Math.max(0, Math.round(kgSaved / 21)); // 21 kg/year/tree
-  const phoneCharges = Math.max(0, Math.round(kgSaved * 121));
-  const kmDriven = Math.max(0, Math.round(kgSaved / 0.21));
-  const burgers = Math.max(0, Math.round(kgSaved / 2.5));
-  return { trees, phoneCharges, kmDriven, burgers };
+  const safe = Number.isFinite(kgSaved) ? Math.max(0, kgSaved) : 0;
+  return {
+    trees: Math.round(safe / 21),
+    phoneCharges: Math.round(safe * 121),
+    kmDriven: Math.round(safe / 0.21),
+    burgers: Math.round(safe / 2.5),
+  };
 }

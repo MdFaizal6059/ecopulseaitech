@@ -25,13 +25,14 @@ export interface Quest {
   icon: string;
 }
 
+/**
+ * Stored badge state only — display metadata (name, description, art) lives
+ * in `BADGE_REGISTRY` (src/lib/eco/badges.ts). Render code merges them.
+ */
 export interface Badge {
   id: string;
-  name: string;
-  description: string;
   unlocked: boolean;
-  emoji: string;
-  criteria: string;
+  unlockedAt?: number;
 }
 
 export interface Reward {
@@ -48,7 +49,7 @@ export type Tier = "Bronze" | "Silver" | "Gold" | "Emerald" | "Diamond";
 export interface UserProfile {
   name: string;
   avatar: string;
-  baselineAnnualTons: number; // baseline annual CO2e tons
+  baselineAnnualTons: number;
   xp: number;
   level: number;
   credits: number;
@@ -59,16 +60,18 @@ export interface UserProfile {
   diet: DietType;
   commute: TransportMode;
   shopping: "low" | "medium" | "high";
+  pinnedBadge?: string;
 }
 
 export interface LeaderboardEntry {
   id: string;
   name: string;
   avatar: string;
-  prevented: number; // kg co2e
+  prevented: number;
   streak: number;
   tier: Tier;
   isYou?: boolean;
+  pinnedBadge?: string;
 }
 
 export interface AppState {
@@ -78,4 +81,5 @@ export interface AppState {
   badges: Badge[];
   rewards: Reward[];
   leaderboard: LeaderboardEntry[];
+  pendingUnlocks: string[];
 }

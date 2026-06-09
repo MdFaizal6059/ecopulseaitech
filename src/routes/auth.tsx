@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Leaf, Loader2 } from "lucide-react";
+import { Leaf, Loader2, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
@@ -28,6 +28,8 @@ function AuthPage() {
   const [avatar, setAvatar] = useState("🌱");
   const [bio, setBio] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -41,6 +43,13 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
     if (error) {
+      const msg = error.message.toLowerCase();
+      if (msg.includes("email not confirmed") || msg.includes("not confirmed")) {
+        setPendingEmail(email.trim());
+        toast.error("Email not verified", { description: "We sent a new verification link." });
+        await supabase.auth.resend({ type: "signup", email: email.trim() });
+        return;
+      }
       toast.error("Sign in failed", { description: error.message });
       return;
     }
@@ -55,11 +64,11 @@ function AuthPage() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
         data: { full_name: fullName.trim(), avatar, bio: bio.trim() },
       },
     });
@@ -68,8 +77,23 @@ function AuthPage() {
       toast.error("Sign up failed", { description: error.message });
       return;
     }
-    toast.success("Account created", { description: "Signing you in…" });
+    // No session yet because email verification is required
+    if (!data.session) {
+      setPendingEmail(email.trim());
+      toast.success("Check your inbox", { description: "We sent a verification link." });
+      return;
+    }
+    toast.success("Account created");
     navigate({ to: "/" });
+  };
+
+  const resend = async () => {
+    if (!pendingEmail) return;
+    setResending(true);
+    const { error } = await supabase.auth.resend({ type: "signup", email: pendingEmail });
+    setResending(false);
+    if (error) toast.error("Couldn't resend", { description: error.message });
+    else toast.success("Verification email sent");
   };
 
   const avatars = ["🌱", "🌿", "🌍", "🦊", "🐼", "🌸", "🦋", "🌟", "⚡", "🌊"];
@@ -92,52 +116,72 @@ function AuthPage() {
           </div>
         </div>
 
-        <Tabs value={tab} onValueChange={(v) => setTab(v as "signin" | "signup")}>
-          <TabsList className="grid w-full grid-cols-2 bg-white/5">
-            <TabsTrigger value="signin">Sign in</TabsTrigger>
-            <TabsTrigger value="signup">Sign up</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="signin">
-            <form onSubmit={signIn} className="mt-6 space-y-4">
-              <Field id="si-email" label="Email" type="email" value={email} onChange={setEmail} required autoComplete="email" />
-              <Field id="si-password" label="Password" type="password" value={password} onChange={setPassword} required autoComplete="current-password" />
-              <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign in"}
+        {pendingEmail ? (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-3 text-emerald-200">
+              <MailCheck className="h-5 w-5 shrink-0" />
+              <div className="text-sm">Verify your email to continue</div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              We sent a verification link to <span className="font-medium text-foreground">{pendingEmail}</span>. Click it, then come back here and sign in. Check your spam folder if you don't see it.
+            </p>
+            <div className="flex gap-2">
+              <Button onClick={resend} disabled={resending} className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                {resending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Resend email"}
               </Button>
-            </form>
-          </TabsContent>
+              <Button onClick={() => { setPendingEmail(null); setTab("signin"); }} variant="outline" className="border-white/15 bg-white/5">
+                Sign in instead
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Tabs value={tab} onValueChange={(v) => setTab(v as "signin" | "signup")}>
+            <TabsList className="grid w-full grid-cols-2 bg-white/5">
+              <TabsTrigger value="signin">Sign in</TabsTrigger>
+              <TabsTrigger value="signup">Sign up</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="signup">
-            <form onSubmit={signUp} className="mt-6 space-y-4">
-              <Field id="su-name" label="Full name" type="text" value={fullName} onChange={setFullName} required placeholder="Ada Lovelace" />
-              <div>
-                <Label className="mb-1.5 block text-xs text-muted-foreground">Pick an avatar</Label>
-                <div className="flex flex-wrap gap-1.5">
-                  {avatars.map((a) => (
-                    <button
-                      key={a}
-                      type="button"
-                      onClick={() => setAvatar(a)}
-                      className={`flex h-9 w-9 items-center justify-center rounded-lg border text-lg transition-all ${avatar === a ? "border-emerald-400 bg-emerald-400/15" : "border-white/10 bg-white/[0.03] hover:border-white/25"}`}
-                    >
-                      {a}
-                    </button>
-                  ))}
+            <TabsContent value="signin">
+              <form onSubmit={signIn} className="mt-6 space-y-4">
+                <Field id="si-email" label="Email" type="email" value={email} onChange={setEmail} required autoComplete="email" />
+                <Field id="si-password" label="Password" type="password" value={password} onChange={setPassword} required autoComplete="current-password" />
+                <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign in"}
+                </Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="signup">
+              <form onSubmit={signUp} className="mt-6 space-y-4">
+                <Field id="su-name" label="Full name" type="text" value={fullName} onChange={setFullName} required placeholder="Ada Lovelace" />
+                <div>
+                  <Label className="mb-1.5 block text-xs text-muted-foreground">Pick an avatar</Label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {avatars.map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() => setAvatar(a)}
+                        className={`flex h-9 w-9 items-center justify-center rounded-lg border text-lg transition-all ${avatar === a ? "border-emerald-400 bg-emerald-400/15" : "border-white/10 bg-white/[0.03] hover:border-white/25"}`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <Field id="su-email" label="Email" type="email" value={email} onChange={setEmail} required autoComplete="email" />
-              <Field id="su-password" label="Password" type="password" value={password} onChange={setPassword} required autoComplete="new-password" placeholder="At least 6 characters" />
-              <Field id="su-bio" label="Short bio (optional)" type="text" value={bio} onChange={setBio} placeholder="Climate-curious dev" />
-              <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create account"}
-              </Button>
-              <p className="text-[11px] text-muted-foreground">
-                By signing up you agree to use EcoPulse responsibly. We don't sell your data.
-              </p>
-            </form>
-          </TabsContent>
-        </Tabs>
+                <Field id="su-email" label="Email" type="email" value={email} onChange={setEmail} required autoComplete="email" />
+                <Field id="su-password" label="Password" type="password" value={password} onChange={setPassword} required autoComplete="new-password" placeholder="At least 6 characters" />
+                <Field id="su-bio" label="Short bio (optional)" type="text" value={bio} onChange={setBio} placeholder="Climate-curious dev" />
+                <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create account"}
+                </Button>
+                <p className="text-[11px] text-muted-foreground">
+                  We'll send a verification email before you can sign in. We don't sell your data.
+                </p>
+              </form>
+            </TabsContent>
+          </Tabs>
+        )}
 
         <div className="mt-6 text-center text-xs text-muted-foreground">
           <Link to="/auth" className="hover:text-foreground">Trouble signing in?</Link>
