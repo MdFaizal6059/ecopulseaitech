@@ -12,18 +12,13 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
-      include: ["src/lib/**/*.{ts,tsx}"],
+      include: ["src/lib/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
       exclude: [
-        "src/lib/**/*.d.ts",
-        "src/lib/**/*.test.{ts,tsx}",
+        "src/**/*.d.ts",
+        "src/**/*.test.{ts,tsx}",
         "src/integrations/**",
+        "src/routeTree.gen.ts",
       ],
-    },
-  },
-  resolve: {
-    alias: {
-      // Stub static asset imports (png/jpg/svg) so tests don't need real files.
-      "@/assets/badges/first-step.png": "/dev-server/test/asset-stub.ts",
     },
   },
 });
