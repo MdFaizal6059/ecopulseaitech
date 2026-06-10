@@ -82,3 +82,50 @@ The system architecture is engineered for low latency, zero build overhead, and 
 
 Clone the verified repository and initialize your environment locally:
 
+```bash
+git clone https://github.com/MdFaizal6059/ecopulseaitech.git
+cd ecopulseaitech
+bun install
+bun run dev
+```
+
+---
+
+## ✅ Testing, Validation & Maintainability
+
+Maintainability is a first-class concern. The carbon math, natural-language
+parser, and milestone/badge engine are covered by a deterministic unit-test
+suite that runs locally and in CI on every push and pull request.
+
+| Surface                             | Tooling                                       |
+| ----------------------------------- | --------------------------------------------- |
+| Unit + integration tests            | Vitest 4 + jsdom + Testing Library            |
+| Coverage                            | `@vitest/coverage-v8` (text / html / lcov)    |
+| Static analysis                     | ESLint + TypeScript `--strict`                |
+| Continuous integration              | GitHub Actions — `.github/workflows/ci.yml`   |
+
+```bash
+bun run test            # one-shot test run
+bun run test:watch      # interactive watch
+bun run test:coverage   # generate ./coverage report
+bun run typecheck       # strict TS validation
+bun run lint            # ESLint
+```
+
+Tests live next to the code they exercise (e.g. `src/lib/eco/calc.test.ts`
+beside `calc.ts`) so the unit-under-test and its spec are always in sync.
+The full testing philosophy and contribution guide is documented in
+[**TESTING.md**](./TESTING.md).
+
+### CI pipeline
+
+Every push and PR triggers:
+
+1. `bun install --frozen-lockfile`
+2. `bun run lint`
+3. `bun run typecheck`
+4. `bun run test:coverage` (uploaded as a build artifact)
+
+A green check on the PR is the merge gate.
+
+
