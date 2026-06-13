@@ -128,4 +128,21 @@ Every push and PR triggers:
 
 A green check on the PR is the merge gate.
 
+---
+
+## 📚 Documentation Index
+
+Every concern has its own focused doc so judges, contributors, and future
+maintainers can jump straight to what they need:
+
+| Doc                                              | Purpose                                                                          |
+| ------------------------------------------------ | -------------------------------------------------------------------------------- |
+| [`PROBLEM_STATEMENT.md`](./PROBLEM_STATEMENT.md) | Explicit alignment with the Gen AI Academy APAC — Cohort 2 problem statement.    |
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md)           | One-page system map, data flow, directory layout.                                |
+| [`TESTING.md`](./TESTING.md)                     | Testing philosophy, stack, and how to add a new test.                            |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md)           | Local setup, code style, PR conventions, security rules.                         |
+| [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)     | Contributor Covenant — community expectations.                                   |
+
+
+
 

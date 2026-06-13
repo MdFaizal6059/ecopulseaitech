@@ -1,3 +1,15 @@
+/**
+ * Carbon math + natural-language parsing for EcoPulse AI.
+ *
+ * Everything in this module is intentionally a **pure function** of its
+ * inputs so it can be unit-tested deterministically (see `calc.test.ts`
+ * and `aggregations.test.ts`). Time-dependent helpers like `totalByDay`
+ * read the current clock once and otherwise stay referentially honest.
+ *
+ * Emission factors are aligned with the Greenhouse Gas Protocol's
+ * activity-based methodology: `kg CO₂e = activity × emission_factor`.
+ * The constants are exported so tests and UI can show them verbatim.
+ */
 import type {
   Activity,
   AppState,
@@ -11,7 +23,7 @@ import type {
 } from "./types";
 import { defaultBadges } from "./badges";
 
-// Emission factors (kg CO2e per unit)
+/** kg CO₂e per kilometre travelled, per transport mode. */
 export const TRANSPORT_EF: Record<TransportMode, number> = {
   ev: 0.05,
   ice: 0.21,
@@ -34,6 +46,10 @@ export const WATER_EF = 0.34;
 export const US_AVG_TONS = 16.0;
 export const GLOBAL_AVG_TONS = 4.0;
 
+/**
+ * Map total kg CO₂e prevented to a competitive tier.
+ * Thresholds: Silver 40, Gold 100, Emerald 250, Diamond 500.
+ */
 export function tierFor(prevented: number): Tier {
   if (prevented >= 500) return "Diamond";
   if (prevented >= 250) return "Emerald";
@@ -42,16 +58,24 @@ export function tierFor(prevented: number): Tier {
   return "Bronze";
 }
 
+/** Levels are 1-indexed; each level requires 250 XP. */
 export function levelFor(xp: number) {
   return Math.floor(xp / 250) + 1;
 }
 
+/** Progress within the current level band (current, needed, total). */
 export function xpToNextLevel(xp: number) {
   const lvl = levelFor(xp);
   const next = lvl * 250;
   return { current: xp - (lvl - 1) * 250, needed: 250, total: next };
 }
 
+/**
+ * Rough annual baseline (tCO₂e) for a user from their onboarding answers.
+ * Combines housing footprint, daily diet, daily commute and lifestyle
+ * shopping intensity. Used to seed personalised goals — not a substitute
+ * for a full audit.
+ */
 export function calcBaseline(
   housing: UserProfile["housing"],
   diet: DietType,
@@ -134,7 +158,17 @@ export function defaultState(): AppState {
   };
 }
 
-// AI Carbon Assistant — natural language parser
+/**
+ * AI Carbon Assistant — natural-language → structured Activities.
+ *
+ * Detects:
+ *  - Transport: distance (km / miles) and mode (ev, ice, public, bike, walk)
+ *  - Diet: vegan, vegetarian, low-meat, heavy-meat
+ *  - Energy: kWh usage
+ *
+ * Returns an empty array when nothing recognisable is found, so callers
+ * can compose this with toast messages without null-checks.
+ */
 export function parseNaturalLanguage(text: string): Activity[] {
   const lower = text.toLowerCase();
   const acts: Activity[] = [];
