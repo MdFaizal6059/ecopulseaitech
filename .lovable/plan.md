@@ -8,6 +8,7 @@
 ## 1. Reset all data to zero
 
 `src/lib/eco/calc.ts`:
+
 - `generateMockHistory()` → `[]`
 - `defaultLeaderboard()` → only the current user, `prevented: 0, streak: 0, tier: "Bronze"`
 - `defaultProfile()` → `xp: 0, credits: 0, streak: 0, level: 1, tier: "Bronze", baselineAnnualTons: 0`
@@ -30,11 +31,13 @@ Verification emails use Supabase's default sender (reliable, no DNS). The Gmail 
 Connect Gmail via `standard_connectors--connect` (`google_mail`).
 
 New server fn `src/lib/notifications/email.functions.ts` (`createServerFn` + `requireSupabaseAuth`):
+
 - Reads `LOVABLE_API_KEY` + `GOOGLE_MAIL_API_KEY` from `process.env`.
 - Builds an RFC-2822 message — `From: "EcoPulse AI" <builder@gmail>`, `Reply-To`, HTML body — base64url-encodes it, POSTs to `https://connector-gateway.lovable.dev/google_mail/gmail/v1/users/me/messages/send`.
 - Accepts `{ kind: "welcome" | "streak_reminder" | "quest_completed" | "badge_unlocked" | "weekly_summary", to, data }` and renders branded HTML templates (dark-green palette, leaf accent, CTA back to app, embedded badge artwork from CDN).
 
 Client triggers:
+
 - **Welcome** — after first authenticated load.
 - **Streak reminder** — "Protect my streak" button in Dashboard + automatic prompt if `streak > 0` and no activity today.
 - **Quest / Badge unlock** — `completeQuest` / `unlockBadge` in `store.tsx` fires fire-and-forget notification.
@@ -51,6 +54,7 @@ Replace every emoji badge with a real illustrated asset.
 > Duolingo-style mascot badge, chunky 3D vector illustration, soft cel-shading, thick outline, glossy highlights, vibrant eco palette (leaf-green #22c55e, sky #38bdf8, gold #facc15), centered subject on a circular ribboned medal with a small banner reading the badge name, transparent background, playful but premium.
 
 Badges to generate (12, mapped to milestones):
+
 - **First Step** — sprouting seedling on a medal (first activity logged)
 - **Streak Spark** — flame mascot, 3-day streak
 - **Streak Keeper** — flame with shield, 7-day streak
@@ -71,6 +75,7 @@ Stored as `src/assets/badges/<slug>.png.asset.json`. A `BADGE_ART` map in `src/l
 **Unlock logic** — new `evaluateMilestones(state)` in `store.tsx` runs after every activity log / quest completion; any newly satisfied milestone flips `unlocked: true`, sets `unlockedAt`, fires confetti + toast ("New badge: Streak Keeper"), opens a celebratory modal `BadgeUnlockedDialog.tsx` showing the full artwork, and triggers the `badge_unlocked` email.
 
 **UI updates**:
+
 - `Quests.tsx` "Achievements" grid → real `<img src={artUrl}>` tiles, locked badges rendered desaturated + 40% opacity with a small lock chip.
 - New `MilestonesRail` on `Dashboard.tsx` showing next 3 unearned badges with a progress bar toward each threshold.
 - `Marketplace.tsx` adds a "Stickers" tab where unlocked badges double as profile stickers users can pin to their profile card; pinned sticker shows on `Leaderboard.tsx` next to the name.

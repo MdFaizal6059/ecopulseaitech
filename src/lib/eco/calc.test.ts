@@ -134,7 +134,12 @@ describe("equivalencies", () => {
   it("zero or negative kg => zeros, never NaN", () => {
     expect(equivalencies(0)).toEqual({ trees: 0, phoneCharges: 0, kmDriven: 0, burgers: 0 });
     expect(equivalencies(-50)).toEqual({ trees: 0, phoneCharges: 0, kmDriven: 0, burgers: 0 });
-    expect(equivalencies(Number.NaN)).toEqual({ trees: 0, phoneCharges: 0, kmDriven: 0, burgers: 0 });
+    expect(equivalencies(Number.NaN)).toEqual({
+      trees: 0,
+      phoneCharges: 0,
+      kmDriven: 0,
+      burgers: 0,
+    });
   });
 
   it("scales linearly with kg", () => {

@@ -8,21 +8,21 @@ unacceptable behavior to the maintainers.
 
 Examples of behavior that contributes to a positive environment:
 
-* Demonstrating empathy and kindness toward other people.
-* Being respectful of differing opinions, viewpoints, and experiences.
-* Giving and gracefully accepting constructive feedback.
-* Accepting responsibility, apologising to those affected by mistakes,
+- Demonstrating empathy and kindness toward other people.
+- Being respectful of differing opinions, viewpoints, and experiences.
+- Giving and gracefully accepting constructive feedback.
+- Accepting responsibility, apologising to those affected by mistakes,
   and learning from the experience.
-* Focusing on what is best not just for us as individuals, but for the
+- Focusing on what is best not just for us as individuals, but for the
   overall community.
 
 ## Unacceptable behavior
 
-* Harassment, insulting or derogatory comments, personal or political
+- Harassment, insulting or derogatory comments, personal or political
   attacks.
-* Public or private harassment.
-* Publishing others' private information without explicit permission.
-* Other conduct which could reasonably be considered inappropriate in a
+- Public or private harassment.
+- Publishing others' private information without explicit permission.
+- Other conduct which could reasonably be considered inappropriate in a
   professional setting.
 
 ## Enforcement

@@ -1,7 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-type NotificationKind = "welcome" | "streak_reminder" | "quest_completed" | "badge_unlocked" | "test";
+type NotificationKind =
+  | "welcome"
+  | "streak_reminder"
+  | "quest_completed"
+  | "badge_unlocked"
+  | "test";
 
 interface SendInput {
   kind: NotificationKind;
@@ -16,7 +21,11 @@ function b64url(str: string) {
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-function template(kind: NotificationKind, name: string, data: Record<string, string | number> = {}) {
+function template(
+  kind: NotificationKind,
+  name: string,
+  data: Record<string, string | number> = {},
+) {
   const appUrl = data.appUrl || "https://ecopulseaitech.lovable.app";
   const wrap = (title: string, body: string, cta = "Open EcoPulse AI") => `
 <!doctype html><html><body style="margin:0;background:#0B132B;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#e2e8f0;">

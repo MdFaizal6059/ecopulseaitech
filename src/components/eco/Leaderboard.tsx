@@ -20,7 +20,9 @@ export function Leaderboard() {
     <div className="space-y-6">
       <div>
         <div className="text-xs uppercase tracking-widest text-emerald-400/70">Social proof</div>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">Global Leaderboard</h1>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
+          Global Leaderboard
+        </h1>
       </div>
 
       {isLonely && (
@@ -28,9 +30,12 @@ export function Leaderboard() {
           <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300">
             <Users className="h-5 w-5" />
           </div>
-          <div className="mt-3 text-sm font-semibold text-foreground">Be the first to set the pace</div>
+          <div className="mt-3 text-sm font-semibold text-foreground">
+            Be the first to set the pace
+          </div>
           <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">
-            EcoPulse AI just launched — friends you invite will show up here as they log activities. For now, prevented CO₂ is the metric. Log your first action to start climbing.
+            EcoPulse AI just launched — friends you invite will show up here as they log activities.
+            For now, prevented CO₂ is the metric. Log your first action to start climbing.
           </p>
         </Card>
       )}
@@ -47,22 +52,49 @@ export function Leaderboard() {
           {entries.map((e, i) => {
             const pinned = e.pinnedBadge ? badgeMeta(e.pinnedBadge) : null;
             return (
-              <div key={e.id} className={`grid grid-cols-12 items-center px-4 py-3 text-sm transition-colors ${e.isYou ? "bg-emerald-500/10" : "hover:bg-white/[0.03]"}`}>
-                <div className="col-span-1 font-mono text-muted-foreground">{i + 1}{i === 0 && <Crown className="ml-1 inline h-3.5 w-3.5 text-amber-400" />}</div>
+              <div
+                key={e.id}
+                className={`grid grid-cols-12 items-center px-4 py-3 text-sm transition-colors ${e.isYou ? "bg-emerald-500/10" : "hover:bg-white/[0.03]"}`}
+              >
+                <div className="col-span-1 font-mono text-muted-foreground">
+                  {i + 1}
+                  {i === 0 && <Crown className="ml-1 inline h-3.5 w-3.5 text-amber-400" />}
+                </div>
                 <div className="col-span-6 flex items-center gap-2">
                   <span className="text-xl">{e.avatar}</span>
-                  <span className={`font-medium ${e.isYou ? "text-emerald-300" : "text-foreground"}`}>
-                    {e.name} {e.isYou && <span className="ml-1 rounded-full bg-emerald-400/20 px-2 text-[10px] text-emerald-300">YOU</span>}
+                  <span
+                    className={`font-medium ${e.isYou ? "text-emerald-300" : "text-foreground"}`}
+                  >
+                    {e.name}{" "}
+                    {e.isYou && (
+                      <span className="ml-1 rounded-full bg-emerald-400/20 px-2 text-[10px] text-emerald-300">
+                        YOU
+                      </span>
+                    )}
                   </span>
                   {pinned && (
-                    <img src={pinned.artUrl} alt={pinned.name} width={1024} height={1024} loading="lazy" className="h-6 w-6 object-contain" title={pinned.name} />
+                    <img
+                      src={pinned.artUrl}
+                      alt={pinned.name}
+                      width={1024}
+                      height={1024}
+                      loading="lazy"
+                      className="h-6 w-6 object-contain"
+                      title={pinned.name}
+                    />
                   )}
                 </div>
                 <div className="col-span-2">
-                  <span className={`bg-gradient-to-r ${TIER_COLOR[e.tier]} bg-clip-text text-xs font-semibold text-transparent`}>{e.tier}</span>
+                  <span
+                    className={`bg-gradient-to-r ${TIER_COLOR[e.tier]} bg-clip-text text-xs font-semibold text-transparent`}
+                  >
+                    {e.tier}
+                  </span>
                 </div>
                 <div className="col-span-1 text-xs text-amber-300">🔥{e.streak}</div>
-                <div className="col-span-2 text-right text-sm font-semibold text-foreground">{e.prevented} kg</div>
+                <div className="col-span-2 text-right text-sm font-semibold text-foreground">
+                  {e.prevented} kg
+                </div>
               </div>
             );
           })}

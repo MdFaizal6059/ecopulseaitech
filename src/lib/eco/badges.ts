@@ -35,18 +35,102 @@ export interface BadgeMeta {
 }
 
 export const BADGE_REGISTRY: BadgeMeta[] = [
-  { id: "first-step", name: "First Step", description: "You logged your very first activity. The journey of a thousand miles…", criteria: "Log 1 activity", artUrl: firstStep, milestone: { kind: "first_activity", threshold: 1 } },
-  { id: "streak-spark", name: "Streak Spark", description: "3 days in a row of conscious choices.", criteria: "3-day streak", artUrl: streakSpark, milestone: { kind: "streak_days", threshold: 3 } },
-  { id: "streak-keeper", name: "Streak Keeper", description: "A full week of low-carbon momentum.", criteria: "7-day streak", artUrl: streakKeeper, milestone: { kind: "streak_days", threshold: 7 } },
-  { id: "streak-legend", name: "Streak Legend", description: "30 days. You're a climate phoenix.", criteria: "30-day streak", artUrl: streakLegend, milestone: { kind: "streak_days", threshold: 30 } },
-  { id: "tree-hugger", name: "Tree Hugger", description: "Saved enough CO₂ to equal 10 tree-years.", criteria: "10 trees worth of CO₂", artUrl: treeHugger, milestone: { kind: "trees_saved", threshold: 10 } },
-  { id: "forest-guardian", name: "Forest Guardian", description: "A whole grove worth of carbon prevented.", criteria: "100 trees worth of CO₂", artUrl: forestGuardian, milestone: { kind: "trees_saved", threshold: 100 } },
-  { id: "ev-pioneer", name: "EV Pioneer", description: "First electric ride logged. Zero tailpipe.", criteria: "Log 1 EV trip", artUrl: evPioneer, milestone: { kind: "ev_trips", threshold: 1 } },
-  { id: "transit-hero", name: "Transit Hero", description: "20 trips on bus, train, or metro.", criteria: "20 transit trips", artUrl: transitHero, milestone: { kind: "transit_trips", threshold: 20 } },
-  { id: "plant-power", name: "Plant Power", description: "10 plant-forward meals on the books.", criteria: "10 vegan / vegetarian meals", artUrl: plantPower, milestone: { kind: "vegan_meals", threshold: 10 } },
-  { id: "quest-champion", name: "Quest Champion", description: "10 eco-quests crushed. You're built different.", criteria: "Complete 10 quests", artUrl: questChampion, milestone: { kind: "quests_completed", threshold: 10 } },
-  { id: "marketplace-maven", name: "Marketplace Maven", description: "First redemption from the rewards store.", criteria: "Redeem 1 reward", artUrl: marketplaceMaven, milestone: { kind: "rewards_redeemed", threshold: 1 } },
-  { id: "carbon-crusher", name: "Carbon Crusher", description: "100 kg of CO₂ prevented vs your baseline.", criteria: "Prevent 100 kg CO₂e", artUrl: carbonCrusher, milestone: { kind: "kg_prevented", threshold: 100 } },
+  {
+    id: "first-step",
+    name: "First Step",
+    description: "You logged your very first activity. The journey of a thousand miles…",
+    criteria: "Log 1 activity",
+    artUrl: firstStep,
+    milestone: { kind: "first_activity", threshold: 1 },
+  },
+  {
+    id: "streak-spark",
+    name: "Streak Spark",
+    description: "3 days in a row of conscious choices.",
+    criteria: "3-day streak",
+    artUrl: streakSpark,
+    milestone: { kind: "streak_days", threshold: 3 },
+  },
+  {
+    id: "streak-keeper",
+    name: "Streak Keeper",
+    description: "A full week of low-carbon momentum.",
+    criteria: "7-day streak",
+    artUrl: streakKeeper,
+    milestone: { kind: "streak_days", threshold: 7 },
+  },
+  {
+    id: "streak-legend",
+    name: "Streak Legend",
+    description: "30 days. You're a climate phoenix.",
+    criteria: "30-day streak",
+    artUrl: streakLegend,
+    milestone: { kind: "streak_days", threshold: 30 },
+  },
+  {
+    id: "tree-hugger",
+    name: "Tree Hugger",
+    description: "Saved enough CO₂ to equal 10 tree-years.",
+    criteria: "10 trees worth of CO₂",
+    artUrl: treeHugger,
+    milestone: { kind: "trees_saved", threshold: 10 },
+  },
+  {
+    id: "forest-guardian",
+    name: "Forest Guardian",
+    description: "A whole grove worth of carbon prevented.",
+    criteria: "100 trees worth of CO₂",
+    artUrl: forestGuardian,
+    milestone: { kind: "trees_saved", threshold: 100 },
+  },
+  {
+    id: "ev-pioneer",
+    name: "EV Pioneer",
+    description: "First electric ride logged. Zero tailpipe.",
+    criteria: "Log 1 EV trip",
+    artUrl: evPioneer,
+    milestone: { kind: "ev_trips", threshold: 1 },
+  },
+  {
+    id: "transit-hero",
+    name: "Transit Hero",
+    description: "20 trips on bus, train, or metro.",
+    criteria: "20 transit trips",
+    artUrl: transitHero,
+    milestone: { kind: "transit_trips", threshold: 20 },
+  },
+  {
+    id: "plant-power",
+    name: "Plant Power",
+    description: "10 plant-forward meals on the books.",
+    criteria: "10 vegan / vegetarian meals",
+    artUrl: plantPower,
+    milestone: { kind: "vegan_meals", threshold: 10 },
+  },
+  {
+    id: "quest-champion",
+    name: "Quest Champion",
+    description: "10 eco-quests crushed. You're built different.",
+    criteria: "Complete 10 quests",
+    artUrl: questChampion,
+    milestone: { kind: "quests_completed", threshold: 10 },
+  },
+  {
+    id: "marketplace-maven",
+    name: "Marketplace Maven",
+    description: "First redemption from the rewards store.",
+    criteria: "Redeem 1 reward",
+    artUrl: marketplaceMaven,
+    milestone: { kind: "rewards_redeemed", threshold: 1 },
+  },
+  {
+    id: "carbon-crusher",
+    name: "Carbon Crusher",
+    description: "100 kg of CO₂ prevented vs your baseline.",
+    criteria: "Prevent 100 kg CO₂e",
+    artUrl: carbonCrusher,
+    milestone: { kind: "kg_prevented", threshold: 100 },
+  },
 ];
 
 export function badgeMeta(id: string): BadgeMeta | undefined {
@@ -62,11 +146,17 @@ export function defaultBadges(): Badge[] {
 export function milestoneValues(state: AppState, redeemedCount: number) {
   const acts = state.activities;
   const evTrips = acts.filter((a) => a.category === "transport" && a.meta?.mode === "ev").length;
-  const transitTrips = acts.filter((a) => a.category === "transport" && a.meta?.mode === "public").length;
-  const veganMeals = acts.filter((a) => a.category === "diet" && (a.meta?.diet === "vegan" || a.meta?.diet === "vegetarian")).length;
+  const transitTrips = acts.filter(
+    (a) => a.category === "transport" && a.meta?.mode === "public",
+  ).length;
+  const veganMeals = acts.filter(
+    (a) => a.category === "diet" && (a.meta?.diet === "vegan" || a.meta?.diet === "vegetarian"),
+  ).length;
   const questsCompleted = state.quests.filter((q) => q.completed).length;
   const baselineMonthlyKg = (state.profile.baselineAnnualTons * 1000) / 12;
-  const monthlyEmitted = totalEmissionsKg(acts.filter((a) => a.timestamp > Date.now() - 30 * 86400000));
+  const monthlyEmitted = totalEmissionsKg(
+    acts.filter((a) => a.timestamp > Date.now() - 30 * 86400000),
+  );
   const kgPrevented = Math.max(0, baselineMonthlyKg - monthlyEmitted);
   const trees = equivalencies(kgPrevented).trees;
   return {
@@ -83,7 +173,10 @@ export function milestoneValues(state: AppState, redeemedCount: number) {
 }
 
 /** Run milestone evaluation; return newly-unlocked badge IDs and the updated badge array. */
-export function evaluateMilestones(state: AppState, redeemedCount: number): { badges: Badge[]; newlyUnlocked: string[] } {
+export function evaluateMilestones(
+  state: AppState,
+  redeemedCount: number,
+): { badges: Badge[]; newlyUnlocked: string[] } {
   const values = milestoneValues(state, redeemedCount);
   const newlyUnlocked: string[] = [];
   const badges = state.badges.map((b) => {

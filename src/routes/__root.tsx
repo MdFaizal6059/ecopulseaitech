@@ -80,16 +80,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "EcoPulse AI — Carbon Footprint Awareness Platform" },
-      { name: "description", content: "Track, gamify, and reduce your carbon footprint with real-time analytics, AI-powered logging, eco-quests, and a global leaderboard." },
+      {
+        name: "description",
+        content:
+          "Track, gamify, and reduce your carbon footprint with real-time analytics, AI-powered logging, eco-quests, and a global leaderboard.",
+      },
       { name: "author", content: "EcoPulse AI" },
       { property: "og:title", content: "EcoPulse AI — Carbon Footprint Awareness Platform" },
-      { property: "og:description", content: "Track, gamify, and reduce your carbon footprint with real-time analytics, AI-powered logging, eco-quests, and a global leaderboard." },
+      {
+        property: "og:description",
+        content:
+          "Track, gamify, and reduce your carbon footprint with real-time analytics, AI-powered logging, eco-quests, and a global leaderboard.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "EcoPulse AI — Carbon Footprint Awareness Platform" },
-      { name: "twitter:description", content: "Track, gamify, and reduce your carbon footprint with real-time analytics, AI-powered logging, eco-quests, and a global leaderboard." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5124ba43-2b84-46b6-a50d-c24df6f4a40d/id-preview-df59da86--5fd41672-b6b3-4029-b6e0-d7485de26668.lovable.app-1780942208350.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5124ba43-2b84-46b6-a50d-c24df6f4a40d/id-preview-df59da86--5fd41672-b6b3-4029-b6e0-d7485de26668.lovable.app-1780942208350.png" },
+      {
+        name: "twitter:description",
+        content:
+          "Track, gamify, and reduce your carbon footprint with real-time analytics, AI-powered logging, eco-quests, and a global leaderboard.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5124ba43-2b84-46b6-a50d-c24df6f4a40d/id-preview-df59da86--5fd41672-b6b3-4029-b6e0-d7485de26668.lovable.app-1780942208350.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5124ba43-2b84-46b6-a50d-c24df6f4a40d/id-preview-df59da86--5fd41672-b6b3-4029-b6e0-d7485de26668.lovable.app-1780942208350.png",
+      },
     ],
     links: [
       {

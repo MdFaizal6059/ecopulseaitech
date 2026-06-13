@@ -13,19 +13,19 @@ in seconds.
 
 ## 1. The Problem
 
-> *Climate awareness is high, but daily behavior is unchanged. Existing
+> _Climate awareness is high, but daily behavior is unchanged. Existing
 > carbon trackers are either too clinical (spreadsheets, audits) or too
 > shallow (one-tap "offset" buttons). Neither produces sustained,
 > measurable reductions in personal emissions. The opportunity is to use
 > Generative AI to make carbon literacy effortless and to use behavioral
-> design to make it sticky.*
+> design to make it sticky._
 
 ### Why this matters for APAC
 
-* Per-capita emissions in APAC are rising faster than any other region.
-* Smartphone-first users in APAC respond to gamified, social, low-friction
+- Per-capita emissions in APAC are rising faster than any other region.
+- Smartphone-first users in APAC respond to gamified, social, low-friction
   experiences (Duolingo, Strava, payment apps) far better than to dashboards.
-* Localized transport mixes (two-wheelers, metros, EV ride-share) need a
+- Localized transport mixes (two-wheelers, metros, EV ride-share) need a
   parser that understands natural everyday language, not US-only forms.
 
 ---
@@ -59,16 +59,16 @@ EcoPulse AI is a production-ready web app that turns carbon tracking into a
 
 ## 3. Mapping to Judging Criteria
 
-| Criterion                          | Where it shows up in this repo                                                                                                                                                                          |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Problem-statement alignment**    | This document + `README.md` "Architecture & Core Modules"; every feature is traceable to a sustainability outcome.                                                                                      |
-| **Use of Generative AI**           | `parseNaturalLanguage` (NL → structured activities), Gmail-powered AI assistant for streak reminders, AI-styled equivalency narratives (`equivalencies()`).                                             |
-| **Code quality**                   | Strict TypeScript, ESLint + Prettier, JSDoc on all public APIs, modular co-located tests, no dead code, semantic design tokens (no hardcoded colors). See `ARCHITECTURE.md` and `CONTRIBUTING.md`.      |
-| **Testing & maintainability**      | 37+ deterministic unit tests (`*.test.ts` next to source), `@vitest/coverage-v8`, GitHub Actions CI running lint + typecheck + coverage on every push. See `TESTING.md`.                                |
-| **Security**                       | Row-Level Security on every public table, `has_role` security-definer pattern, Supabase email verification enforced, no service keys in client code, audited via `supabase--linter`.                    |
-| **Efficiency**                     | Edge-deployed (Cloudflare Workers), per-request `QueryClient`, loader-pattern data fetching, image assets compressed, no client-side heavy libraries.                                                   |
-| **Accessibility**                  | shadcn/Radix primitives (ARIA-correct by default), semantic design tokens guarantee WCAG-AA contrast, keyboard navigation, `aria-label` on every icon-only button, single `<main>` per route.           |
-| **Uniqueness / "wow" factor**      | Hand-illustrated 3D vector badges (not emoji), confetti badge-unlock dialog, glassmorphic eco-futurist visual system, real Gmail-branded notifications under the **EcoPulse AI** sender identity.       |
+| Criterion                       | Where it shows up in this repo                                                                                                                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Problem-statement alignment** | This document + `README.md` "Architecture & Core Modules"; every feature is traceable to a sustainability outcome.                                                                                 |
+| **Use of Generative AI**        | `parseNaturalLanguage` (NL → structured activities), Gmail-powered AI assistant for streak reminders, AI-styled equivalency narratives (`equivalencies()`).                                        |
+| **Code quality**                | Strict TypeScript, ESLint + Prettier, JSDoc on all public APIs, modular co-located tests, no dead code, semantic design tokens (no hardcoded colors). See `ARCHITECTURE.md` and `CONTRIBUTING.md`. |
+| **Testing & maintainability**   | 37+ deterministic unit tests (`*.test.ts` next to source), `@vitest/coverage-v8`, GitHub Actions CI running lint + typecheck + coverage on every push. See `TESTING.md`.                           |
+| **Security**                    | Row-Level Security on every public table, `has_role` security-definer pattern, Supabase email verification enforced, no service keys in client code, audited via `supabase--linter`.               |
+| **Efficiency**                  | Edge-deployed (Cloudflare Workers), per-request `QueryClient`, loader-pattern data fetching, image assets compressed, no client-side heavy libraries.                                              |
+| **Accessibility**               | shadcn/Radix primitives (ARIA-correct by default), semantic design tokens guarantee WCAG-AA contrast, keyboard navigation, `aria-label` on every icon-only button, single `<main>` per route.      |
+| **Uniqueness / "wow" factor**   | Hand-illustrated 3D vector badges (not emoji), confetti badge-unlock dialog, glassmorphic eco-futurist visual system, real Gmail-branded notifications under the **EcoPulse AI** sender identity.  |
 
 ---
 
@@ -97,17 +97,17 @@ EcoPulse AI is a production-ready web app that turns carbon tracking into a
 
 ## 5. What Makes This Submission Different
 
-* **Zero placeholder data.** A new account starts at exactly zero —
+- **Zero placeholder data.** A new account starts at exactly zero —
   zero XP, zero kg prevented, Bronze tier, empty leaderboard. Nothing in
   the UI is fake (`defaultProfile`, `defaultLeaderboard` in `calc.ts`).
-* **Badges are real illustrated assets**, not emoji or GIFs — see the
+- **Badges are real illustrated assets**, not emoji or GIFs — see the
   PNGs under `src/assets/badges/`.
-* **Email verification is mandatory** before a new account can log
+- **Email verification is mandatory** before a new account can log
   activities — configured via `supabase--configure_auth` and enforced in
   `src/routes/auth.tsx`.
-* **Tested business logic.** Carbon math, NL parsing, milestone logic and
+- **Tested business logic.** Carbon math, NL parsing, milestone logic and
   data aggregations are all covered by Vitest specs that run in CI.
-* **Documented and contributable.** `README.md`, `ARCHITECTURE.md`,
+- **Documented and contributable.** `README.md`, `ARCHITECTURE.md`,
   `CONTRIBUTING.md`, `TESTING.md`, and this `PROBLEM_STATEMENT.md` mean a
   judge or new contributor can be productive in minutes.
 

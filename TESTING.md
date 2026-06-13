@@ -6,14 +6,14 @@ the test suite is organised and how to extend it.
 
 ## Stack
 
-| Layer            | Tool                                                                 |
-| ---------------- | -------------------------------------------------------------------- |
-| Test runner      | [Vitest 4](https://vitest.dev) (Vite-native, same transform as app)  |
-| DOM environment  | [jsdom](https://github.com/jsdom/jsdom)                              |
-| Component tests  | [@testing-library/react](https://testing-library.com/) + user-event  |
-| Assertions       | Vitest + `@testing-library/jest-dom`                                 |
-| Coverage         | `@vitest/coverage-v8` (text + HTML + lcov)                           |
-| CI               | GitHub Actions (`.github/workflows/ci.yml`) — lint, typecheck, test  |
+| Layer           | Tool                                                                |
+| --------------- | ------------------------------------------------------------------- |
+| Test runner     | [Vitest 4](https://vitest.dev) (Vite-native, same transform as app) |
+| DOM environment | [jsdom](https://github.com/jsdom/jsdom)                             |
+| Component tests | [@testing-library/react](https://testing-library.com/) + user-event |
+| Assertions      | Vitest + `@testing-library/jest-dom`                                |
+| Coverage        | `@vitest/coverage-v8` (text + HTML + lcov)                          |
+| CI              | GitHub Actions (`.github/workflows/ci.yml`) — lint, typecheck, test |
 
 ## Commands
 

@@ -112,7 +112,9 @@ function AuthPage() {
           </div>
           <div>
             <div className="text-sm font-bold tracking-tight text-foreground">EcoPulse AI</div>
-            <div className="text-[10px] uppercase tracking-widest text-emerald-400/70">Carbon awareness platform</div>
+            <div className="text-[10px] uppercase tracking-widest text-emerald-400/70">
+              Carbon awareness platform
+            </div>
           </div>
         </div>
 
@@ -123,13 +125,26 @@ function AuthPage() {
               <div className="text-sm">Verify your email to continue</div>
             </div>
             <p className="text-sm text-muted-foreground">
-              We sent a verification link to <span className="font-medium text-foreground">{pendingEmail}</span>. Click it, then come back here and sign in. Check your spam folder if you don't see it.
+              We sent a verification link to{" "}
+              <span className="font-medium text-foreground">{pendingEmail}</span>. Click it, then
+              come back here and sign in. Check your spam folder if you don't see it.
             </p>
             <div className="flex gap-2">
-              <Button onClick={resend} disabled={resending} className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+              <Button
+                onClick={resend}
+                disabled={resending}
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white"
+              >
                 {resending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Resend email"}
               </Button>
-              <Button onClick={() => { setPendingEmail(null); setTab("signin"); }} variant="outline" className="border-white/15 bg-white/5">
+              <Button
+                onClick={() => {
+                  setPendingEmail(null);
+                  setTab("signin");
+                }}
+                variant="outline"
+                className="border-white/15 bg-white/5"
+              >
                 Sign in instead
               </Button>
             </div>
@@ -143,9 +158,29 @@ function AuthPage() {
 
             <TabsContent value="signin">
               <form onSubmit={signIn} className="mt-6 space-y-4">
-                <Field id="si-email" label="Email" type="email" value={email} onChange={setEmail} required autoComplete="email" />
-                <Field id="si-password" label="Password" type="password" value={password} onChange={setPassword} required autoComplete="current-password" />
-                <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                <Field
+                  id="si-email"
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={setEmail}
+                  required
+                  autoComplete="email"
+                />
+                <Field
+                  id="si-password"
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={setPassword}
+                  required
+                  autoComplete="current-password"
+                />
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white"
+                >
                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign in"}
                 </Button>
               </form>
@@ -153,9 +188,19 @@ function AuthPage() {
 
             <TabsContent value="signup">
               <form onSubmit={signUp} className="mt-6 space-y-4">
-                <Field id="su-name" label="Full name" type="text" value={fullName} onChange={setFullName} required placeholder="Ada Lovelace" />
+                <Field
+                  id="su-name"
+                  label="Full name"
+                  type="text"
+                  value={fullName}
+                  onChange={setFullName}
+                  required
+                  placeholder="Ada Lovelace"
+                />
                 <div>
-                  <Label className="mb-1.5 block text-xs text-muted-foreground">Pick an avatar</Label>
+                  <Label className="mb-1.5 block text-xs text-muted-foreground">
+                    Pick an avatar
+                  </Label>
                   <div className="flex flex-wrap gap-1.5">
                     {avatars.map((a) => (
                       <button
@@ -169,10 +214,38 @@ function AuthPage() {
                     ))}
                   </div>
                 </div>
-                <Field id="su-email" label="Email" type="email" value={email} onChange={setEmail} required autoComplete="email" />
-                <Field id="su-password" label="Password" type="password" value={password} onChange={setPassword} required autoComplete="new-password" placeholder="At least 6 characters" />
-                <Field id="su-bio" label="Short bio (optional)" type="text" value={bio} onChange={setBio} placeholder="Climate-curious dev" />
-                <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                <Field
+                  id="su-email"
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={setEmail}
+                  required
+                  autoComplete="email"
+                />
+                <Field
+                  id="su-password"
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={setPassword}
+                  required
+                  autoComplete="new-password"
+                  placeholder="At least 6 characters"
+                />
+                <Field
+                  id="su-bio"
+                  label="Short bio (optional)"
+                  type="text"
+                  value={bio}
+                  onChange={setBio}
+                  placeholder="Climate-curious dev"
+                />
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white"
+                >
                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create account"}
                 </Button>
                 <p className="text-[11px] text-muted-foreground">
@@ -184,18 +257,49 @@ function AuthPage() {
         )}
 
         <div className="mt-6 text-center text-xs text-muted-foreground">
-          <Link to="/auth" className="hover:text-foreground">Trouble signing in?</Link>
+          <Link to="/auth" className="hover:text-foreground">
+            Trouble signing in?
+          </Link>
         </div>
       </Card>
     </div>
   );
 }
 
-function Field({ id, label, value, onChange, type, required, autoComplete, placeholder }: { id: string; label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean; autoComplete?: string; placeholder?: string }) {
+function Field({
+  id,
+  label,
+  value,
+  onChange,
+  type,
+  required,
+  autoComplete,
+  placeholder,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  required?: boolean;
+  autoComplete?: string;
+  placeholder?: string;
+}) {
   return (
     <div>
-      <Label htmlFor={id} className="mb-1.5 block text-xs text-muted-foreground">{label}</Label>
-      <Input id={id} type={type} value={value} onChange={(e) => onChange(e.target.value)} required={required} autoComplete={autoComplete} placeholder={placeholder} className="bg-white/5" />
+      <Label htmlFor={id} className="mb-1.5 block text-xs text-muted-foreground">
+        {label}
+      </Label>
+      <Input
+        id={id}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        className="bg-white/5"
+      />
     </div>
   );
 }

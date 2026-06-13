@@ -1,17 +1,38 @@
-import { LayoutDashboard, PlusCircle, BarChart3, Trophy, Gift, Crown, Leaf, User, Award } from "lucide-react";
+import {
+  LayoutDashboard,
+  PlusCircle,
+  BarChart3,
+  Trophy,
+  Gift,
+  Crown,
+  Leaf,
+  User,
+  Award,
+} from "lucide-react";
 import { useEco } from "@/lib/eco/store";
 import type { ViewKey } from "./types";
 
-const items: { key: ViewKey; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { key: "log", label: "Log Activity", icon: PlusCircle },
-  { key: "analytics", label: "Analytics", icon: BarChart3 },
-  { key: "quests", label: "Eco-Quests", icon: Trophy },
-  { key: "market", label: "Marketplace", icon: Gift },
-  { key: "leaderboard", label: "Leaderboard", icon: Crown },
-];
+const items: { key: ViewKey; label: string; icon: React.ComponentType<{ className?: string }> }[] =
+  [
+    { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { key: "log", label: "Log Activity", icon: PlusCircle },
+    { key: "analytics", label: "Analytics", icon: BarChart3 },
+    { key: "quests", label: "Eco-Quests", icon: Trophy },
+    { key: "market", label: "Marketplace", icon: Gift },
+    { key: "leaderboard", label: "Leaderboard", icon: Crown },
+  ];
 
-export function Sidebar({ active, onChange, onSettings, onSubmission }: { active: ViewKey; onChange: (k: ViewKey) => void; onSettings: () => void; onSubmission: () => void }) {
+export function Sidebar({
+  active,
+  onChange,
+  onSettings,
+  onSubmission,
+}: {
+  active: ViewKey;
+  onChange: (k: ViewKey) => void;
+  onSettings: () => void;
+  onSubmission: () => void;
+}) {
   const { state } = useEco();
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-white/5 bg-white/[0.02] p-4 backdrop-blur-xl md:flex md:flex-col">
@@ -24,7 +45,9 @@ export function Sidebar({ active, onChange, onSettings, onSubmission }: { active
         </div>
         <div>
           <div className="text-sm font-bold tracking-tight text-foreground">EcoPulse AI</div>
-          <div className="text-[10px] uppercase tracking-widest text-emerald-400/70">v1.0 · Live</div>
+          <div className="text-[10px] uppercase tracking-widest text-emerald-400/70">
+            v1.0 · Live
+          </div>
         </div>
       </div>
 
@@ -41,7 +64,9 @@ export function Sidebar({ active, onChange, onSettings, onSubmission }: { active
           >
             <Icon className={`h-4 w-4 ${active === key ? "text-emerald-400" : ""}`} />
             <span className="font-medium">{label}</span>
-            {active === key && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />}
+            {active === key && (
+              <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+            )}
           </button>
         ))}
       </nav>
@@ -61,13 +86,19 @@ export function Sidebar({ active, onChange, onSettings, onSubmission }: { active
         Account & profile
       </button>
 
-      <button onClick={onSettings} className="rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-3 text-left transition-all hover:border-emerald-400/30">
+      <button
+        onClick={onSettings}
+        className="rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-3 text-left transition-all hover:border-emerald-400/30"
+      >
         <div className="flex items-center gap-2">
           <div className="text-2xl">{state.profile.avatar}</div>
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-foreground">{state.profile.name}</div>
+            <div className="truncate text-sm font-semibold text-foreground">
+              {state.profile.name}
+            </div>
             <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <span className="text-emerald-400">Lv {state.profile.level}</span> · <span>{state.profile.tier}</span> · <span>🔥{state.profile.streak}d</span>
+              <span className="text-emerald-400">Lv {state.profile.level}</span> ·{" "}
+              <span>{state.profile.tier}</span> · <span>🔥{state.profile.streak}d</span>
             </div>
           </div>
         </div>
@@ -76,7 +107,13 @@ export function Sidebar({ active, onChange, onSettings, onSubmission }: { active
   );
 }
 
-export function MobileNav({ active, onChange }: { active: ViewKey; onChange: (k: ViewKey) => void }) {
+export function MobileNav({
+  active,
+  onChange,
+}: {
+  active: ViewKey;
+  onChange: (k: ViewKey) => void;
+}) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-white/10 bg-slate-950/80 px-2 py-2 backdrop-blur-xl md:hidden">
       {items.map(({ key, label, icon: Icon }) => (
