@@ -64,7 +64,9 @@ export function EcoProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch {}
+    } catch {
+      // ignore storage write errors (quota, private mode)
+    }
   }, [state, hydrated]);
 
   const setState = useCallback(
