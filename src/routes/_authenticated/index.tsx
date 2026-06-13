@@ -60,7 +60,9 @@ function App() {
           localStorage.setItem(key, "1");
           send({ data: { kind: "welcome" } }).catch(() => {});
         }
-      } catch {}
+      } catch {
+        // ignore welcome-email bootstrap failures
+      }
     })();
   }, [updateProfile, send]);
 
