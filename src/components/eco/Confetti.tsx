@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
 export function Confetti({ trigger }: { trigger: number }) {
-  const [pieces, setPieces] = useState<{ id: number; left: number; delay: number; color: string; rot: number }[]>([]);
+  const [pieces, setPieces] = useState<
+    { id: number; left: number; delay: number; color: string; rot: number }[]
+  >([]);
   useEffect(() => {
     if (!trigger) return;
     const colors = ["#10B981", "#34D399", "#FBBF24", "#F472B6", "#60A5FA", "#A78BFA"];

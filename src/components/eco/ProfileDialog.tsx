@@ -14,7 +14,13 @@ import { sendNotification } from "@/lib/notifications/email.functions";
 
 const AVATARS = ["🌱", "🌿", "🌍", "🦊", "🐼", "🌸", "🦋", "🌟", "⚡", "🌊", "🐉", "🦅"];
 
-export function ProfileDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (b: boolean) => void }) {
+export function ProfileDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (b: boolean) => void;
+}) {
   const navigate = useNavigate();
   const { updateProfile } = useEco();
   const send = useServerFn(sendNotification);
@@ -33,7 +39,11 @@ export function ProfileDialog({ open, onOpenChange }: { open: boolean; onOpenCha
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) return;
       setEmail(u.user.email ?? "");
-      const { data: p } = await supabase.from("profiles").select("full_name, avatar, bio").eq("id", u.user.id).maybeSingle();
+      const { data: p } = await supabase
+        .from("profiles")
+        .select("full_name, avatar, bio")
+        .eq("id", u.user.id)
+        .maybeSingle();
       if (p) {
         setFullName(p.full_name ?? "");
         setAvatar(p.avatar ?? "🌱");
@@ -46,8 +56,14 @@ export function ProfileDialog({ open, onOpenChange }: { open: boolean; onOpenCha
   const save = async () => {
     setSaving(true);
     const { data: u } = await supabase.auth.getUser();
-    if (!u.user) { setSaving(false); return; }
-    const { error } = await supabase.from("profiles").update({ full_name: fullName.trim(), avatar, bio: bio.trim() }).eq("id", u.user.id);
+    if (!u.user) {
+      setSaving(false);
+      return;
+    }
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: fullName.trim(), avatar, bio: bio.trim() })
+      .eq("id", u.user.id);
     setSaving(false);
     if (error) return toast.error("Couldn't save", { description: error.message });
     updateProfile({ name: fullName.trim() || "Eco Explorer", avatar });
@@ -77,7 +93,9 @@ export function ProfileDialog({ open, onOpenChange }: { open: boolean; onOpenCha
           <DialogTitle>Account & profile</DialogTitle>
         </DialogHeader>
         {loading ? (
-          <div className="flex items-center justify-center py-8 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin" /></div>
+          <div className="flex items-center justify-center py-8 text-muted-foreground">
+            <Loader2 className="h-5 w-5 animate-spin" />
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="rounded-lg border border-white/10 bg-white/[0.03] p-3 text-xs text-muted-foreground">
@@ -99,12 +117,27 @@ export function ProfileDialog({ open, onOpenChange }: { open: boolean; onOpenCha
               </div>
             </div>
             <div>
-              <Label htmlFor="p-name" className="mb-1.5 block text-xs text-muted-foreground">Full name</Label>
-              <Input id="p-name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="bg-white/5" />
+              <Label htmlFor="p-name" className="mb-1.5 block text-xs text-muted-foreground">
+                Full name
+              </Label>
+              <Input
+                id="p-name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="bg-white/5"
+              />
             </div>
             <div>
-              <Label htmlFor="p-bio" className="mb-1.5 block text-xs text-muted-foreground">Bio</Label>
-              <Textarea id="p-bio" value={bio} onChange={(e) => setBio(e.target.value)} className="bg-white/5" rows={3} />
+              <Label htmlFor="p-bio" className="mb-1.5 block text-xs text-muted-foreground">
+                Bio
+              </Label>
+              <Textarea
+                id="p-bio"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                className="bg-white/5"
+                rows={3}
+              />
             </div>
 
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
@@ -112,16 +145,37 @@ export function ProfileDialog({ open, onOpenChange }: { open: boolean; onOpenCha
                 <MailCheck className="h-4 w-4" /> Email notifications
               </div>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                Streak reminders, quest celebrations, and badge unlocks are sent from <span className="text-foreground">EcoPulse AI</span> to your inbox.
+                Streak reminders, quest celebrations, and badge unlocks are sent from{" "}
+                <span className="text-foreground">EcoPulse AI</span> to your inbox.
               </p>
-              <Button onClick={testEmail} disabled={testing} size="sm" variant="outline" className="mt-2 h-7 border-emerald-400/30 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400/20">
-                {testing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Send me a test email"}
+              <Button
+                onClick={testEmail}
+                disabled={testing}
+                size="sm"
+                variant="outline"
+                className="mt-2 h-7 border-emerald-400/30 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400/20"
+              >
+                {testing ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  "Send me a test email"
+                )}
               </Button>
             </div>
 
             <div className="flex gap-2 pt-1">
-              <Button onClick={save} disabled={saving} className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
-                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="mr-2 h-4 w-4" /> Save profile</>}
+              <Button
+                onClick={save}
+                disabled={saving}
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white"
+              >
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" /> Save profile
+                  </>
+                )}
               </Button>
               <Button onClick={signOut} variant="outline" className="border-white/15 bg-white/5">
                 <LogOut className="mr-2 h-4 w-4" /> Sign out

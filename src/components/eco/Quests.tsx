@@ -28,13 +28,15 @@ export function Quests() {
     if (!q) return;
     completeQuest(id);
     setConfetti(Date.now());
-    toast.success(`Quest complete: ${q.title}`, { description: `+${q.xp} XP · +${q.credits} credits` });
+    toast.success(`Quest complete: ${q.title}`, {
+      description: `+${q.xp} XP · +${q.credits} credits`,
+    });
   };
 
   const grouped = {
-    daily: state.quests.filter(q => q.cadence === "daily"),
-    weekly: state.quests.filter(q => q.cadence === "weekly"),
-    monthly: state.quests.filter(q => q.cadence === "monthly"),
+    daily: state.quests.filter((q) => q.cadence === "daily"),
+    weekly: state.quests.filter((q) => q.cadence === "weekly"),
+    monthly: state.quests.filter((q) => q.cadence === "monthly"),
   };
 
   const upcoming = upcomingMilestones(state, redeemedCount);
@@ -49,35 +51,59 @@ export function Quests() {
 
       {(["daily", "weekly", "monthly"] as const).map((cad) => (
         <section key={cad} className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">{cad}</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            {cad}
+          </h2>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {grouped[cad].map((q) => {
               const pct = (q.progress / q.target) * 100;
               return (
-                <Card key={q.id} className={`relative overflow-hidden border-white/10 bg-white/[0.02] p-5 ${q.completed ? "border-emerald-400/40 bg-emerald-500/5" : ""}`}>
+                <Card
+                  key={q.id}
+                  className={`relative overflow-hidden border-white/10 bg-white/[0.02] p-5 ${q.completed ? "border-emerald-400/40 bg-emerald-500/5" : ""}`}
+                >
                   <div className="flex items-start justify-between">
                     <div className="text-3xl">{q.icon}</div>
                     <div className="flex gap-1">
-                      <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] text-emerald-300">+{q.xp} XP</span>
-                      <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-[10px] text-cyan-300">⊙ {q.credits}</span>
+                      <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] text-emerald-300">
+                        +{q.xp} XP
+                      </span>
+                      <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-[10px] text-cyan-300">
+                        ⊙ {q.credits}
+                      </span>
                     </div>
                   </div>
                   <div className="mt-3 font-semibold text-foreground">{q.title}</div>
                   <div className="text-xs text-muted-foreground">{q.description}</div>
                   <div className="mt-4">
                     <div className="mb-1 flex justify-between text-[11px] text-muted-foreground">
-                      <span>{q.progress}/{q.target}</span>
+                      <span>
+                        {q.progress}/{q.target}
+                      </span>
                       <span>{Math.round(pct)}%</span>
                     </div>
                     <Progress value={pct} className="h-1.5 bg-white/5" />
                   </div>
                   <div className="mt-4 flex gap-2">
                     {q.completed ? (
-                      <Button disabled className="w-full bg-emerald-500/20 text-emerald-300">✓ Completed</Button>
+                      <Button disabled className="w-full bg-emerald-500/20 text-emerald-300">
+                        ✓ Completed
+                      </Button>
                     ) : q.progress >= q.target ? (
-                      <Button onClick={() => claim(q.id)} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white">Claim reward</Button>
+                      <Button
+                        onClick={() => claim(q.id)}
+                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white"
+                      >
+                        Claim reward
+                      </Button>
                     ) : (
-                      <Button onClick={() => advance(q.id)} variant="outline" className="w-full border-white/15 bg-white/5">+1 progress</Button>
+                      <Button
+                        onClick={() => advance(q.id)}
+                        variant="outline"
+                        className="w-full border-white/15 bg-white/5"
+                      >
+                        +1 progress
+                      </Button>
                     )}
                   </div>
                 </Card>
@@ -90,8 +116,12 @@ export function Quests() {
       <section className="space-y-3">
         <div className="flex items-end justify-between">
           <div>
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Stickers &amp; Badges</h2>
-            <p className="mt-1 text-xs text-muted-foreground">Earn illustrated milestone badges as you reduce your footprint.</p>
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+              Stickers &amp; Badges
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Earn illustrated milestone badges as you reduce your footprint.
+            </p>
           </div>
           {upcoming[0] && (
             <div className="hidden text-right text-[11px] text-muted-foreground md:block">
@@ -104,7 +134,10 @@ export function Quests() {
             const meta = badgeMeta(b.id);
             if (!meta) return null;
             return (
-              <Card key={b.id} className={`relative overflow-hidden p-4 text-center transition-all ${b.unlocked ? "border-emerald-400/40 bg-gradient-to-br from-emerald-500/10 to-cyan-500/5" : "border-white/10 bg-white/[0.02]"}`}>
+              <Card
+                key={b.id}
+                className={`relative overflow-hidden p-4 text-center transition-all ${b.unlocked ? "border-emerald-400/40 bg-gradient-to-br from-emerald-500/10 to-cyan-500/5" : "border-white/10 bg-white/[0.02]"}`}
+              >
                 <div className="relative mx-auto flex h-24 w-24 items-center justify-center">
                   <img
                     src={meta.artUrl}
@@ -124,7 +157,9 @@ export function Quests() {
                 </div>
                 <div className="mt-3 text-sm font-semibold text-foreground">{meta.name}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground">{meta.criteria}</div>
-                <div className={`mt-2 text-[10px] uppercase tracking-widest ${b.unlocked ? "text-emerald-400" : "text-muted-foreground"}`}>
+                <div
+                  className={`mt-2 text-[10px] uppercase tracking-widest ${b.unlocked ? "text-emerald-400" : "text-muted-foreground"}`}
+                >
                   {b.unlocked ? "Unlocked" : "Locked"}
                 </div>
               </Card>

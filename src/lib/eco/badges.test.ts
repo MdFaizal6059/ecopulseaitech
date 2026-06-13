@@ -43,9 +43,30 @@ describe("milestoneValues", () => {
   it("counts activities, ev/transit trips, and vegan meals", () => {
     const state = stateWith({
       activities: [
-        { id: "a", category: "transport", label: "EV", co2eKg: 1, timestamp: Date.now(), meta: { mode: "ev" } },
-        { id: "b", category: "transport", label: "Bus", co2eKg: 1, timestamp: Date.now(), meta: { mode: "public" } },
-        { id: "c", category: "diet", label: "Vegan", co2eKg: 0.5, timestamp: Date.now(), meta: { diet: "vegan" } },
+        {
+          id: "a",
+          category: "transport",
+          label: "EV",
+          co2eKg: 1,
+          timestamp: Date.now(),
+          meta: { mode: "ev" },
+        },
+        {
+          id: "b",
+          category: "transport",
+          label: "Bus",
+          co2eKg: 1,
+          timestamp: Date.now(),
+          meta: { mode: "public" },
+        },
+        {
+          id: "c",
+          category: "diet",
+          label: "Vegan",
+          co2eKg: 0.5,
+          timestamp: Date.now(),
+          meta: { diet: "vegan" },
+        },
       ],
     });
     const v = milestoneValues(state, 0);
@@ -61,7 +82,14 @@ describe("evaluateMilestones", () => {
   it("unlocks 'first-step' once an activity is logged", () => {
     const state = stateWith({
       activities: [
-        { id: "1", category: "transport", label: "EV", co2eKg: 1, timestamp: Date.now(), meta: { mode: "ev" } },
+        {
+          id: "1",
+          category: "transport",
+          label: "EV",
+          co2eKg: 1,
+          timestamp: Date.now(),
+          meta: { mode: "ev" },
+        },
       ],
     });
     const { badges, newlyUnlocked } = evaluateMilestones(state, 0);
@@ -73,7 +101,14 @@ describe("evaluateMilestones", () => {
     const base = defaultState();
     base.badges = base.badges.map((b) => (b.id === "first-step" ? { ...b, unlocked: true } : b));
     base.activities = [
-      { id: "1", category: "transport", label: "EV", co2eKg: 1, timestamp: Date.now(), meta: { mode: "ev" } },
+      {
+        id: "1",
+        category: "transport",
+        label: "EV",
+        co2eKg: 1,
+        timestamp: Date.now(),
+        meta: { mode: "ev" },
+      },
     ];
     const { newlyUnlocked } = evaluateMilestones(base, 0);
     expect(newlyUnlocked).not.toContain("first-step");
@@ -104,7 +139,10 @@ describe("normalizeBadges", () => {
       { id: "ghost-badge", unlocked: true },
     ];
     const result = normalizeBadges(stored);
-    expect(result.find((b) => b.id === "first-step")).toMatchObject({ unlocked: true, unlockedAt: 12345 });
+    expect(result.find((b) => b.id === "first-step")).toMatchObject({
+      unlocked: true,
+      unlockedAt: 12345,
+    });
     expect(result.find((b) => b.id === "ghost-badge")).toBeUndefined();
     expect(result.length).toBe(BADGE_REGISTRY.length);
   });

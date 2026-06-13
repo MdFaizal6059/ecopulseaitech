@@ -25,44 +25,44 @@ CI runs the same four commands on every push and PR — see
 
 ## Code style
 
-* **TypeScript strict** — no `any`, no implicit `any`. Prefer `unknown`
-  + a narrowing guard when a value is genuinely untyped.
-* **Pure functions** for business logic. Anything in `src/lib/eco/`
+- **TypeScript strict** — no `any`, no implicit `any`. Prefer `unknown`
+  - a narrowing guard when a value is genuinely untyped.
+- **Pure functions** for business logic. Anything in `src/lib/eco/`
   must be deterministic and free of `Date.now()` side-effects where
   practical (inject a clock).
-* **JSDoc on every exported function** in `src/lib/`. One line of intent
+- **JSDoc on every exported function** in `src/lib/`. One line of intent
   is enough; document non-obvious return shapes.
-* **Design tokens, not raw colors.** Never use `text-white`, `bg-black`,
+- **Design tokens, not raw colors.** Never use `text-white`, `bg-black`,
   or `bg-[#...]` in components — use semantic tokens from
   `src/styles.css`.
-* **Co-locate tests.** `foo.ts` → `foo.test.ts` in the same folder.
+- **Co-locate tests.** `foo.ts` → `foo.test.ts` in the same folder.
 
 ## Commit & PR conventions
 
-* Branch off `main`: `feat/short-description`, `fix/short-description`,
+- Branch off `main`: `feat/short-description`, `fix/short-description`,
   `docs/short-description`, `test/short-description`.
-* Conventional Commits where possible: `feat: add streak reminder email`.
-* One logical change per PR. If you touched docs, tests, and code,
+- Conventional Commits where possible: `feat: add streak reminder email`.
+- One logical change per PR. If you touched docs, tests, and code,
   that's fine — but don't bundle two features.
-* PR description should answer: *what changed*, *why*, *how to test*.
+- PR description should answer: _what changed_, _why_, _how to test_.
 
 ## Adding features
 
-| Change                       | Required follow-ups                                        |
-| ---------------------------- | ---------------------------------------------------------- |
-| New emission factor or tier  | Test in `src/lib/eco/calc.test.ts`                         |
-| New milestone / badge        | Test in `src/lib/eco/badges.test.ts` + art under `assets/` |
-| New notification kind        | Branded HTML template + smoke test                         |
-| New protected route          | File under `src/routes/_authenticated/`                    |
-| New public/shareable route   | Top-level route file with its own `head()`                 |
-| New database table           | Migration + RLS policies + `GRANT` statements              |
+| Change                      | Required follow-ups                                        |
+| --------------------------- | ---------------------------------------------------------- |
+| New emission factor or tier | Test in `src/lib/eco/calc.test.ts`                         |
+| New milestone / badge       | Test in `src/lib/eco/badges.test.ts` + art under `assets/` |
+| New notification kind       | Branded HTML template + smoke test                         |
+| New protected route         | File under `src/routes/_authenticated/`                    |
+| New public/shareable route  | Top-level route file with its own `head()`                 |
+| New database table          | Migration + RLS policies + `GRANT` statements              |
 
 ## Security
 
-* Never commit secrets. Use connector-managed env vars.
-* `SUPABASE_SERVICE_ROLE_KEY` is server-only — never import
+- Never commit secrets. Use connector-managed env vars.
+- `SUPABASE_SERVICE_ROLE_KEY` is server-only — never import
   `@/integrations/supabase/client.server` from a component.
-* Every public-schema table needs RLS enabled + explicit `GRANT`s.
+- Every public-schema table needs RLS enabled + explicit `GRANT`s.
 
 ## Filing issues
 

@@ -2,7 +2,18 @@ import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { useEco } from "@/lib/eco/store";
 import { totalByCategory, totalByDay } from "@/lib/eco/calc";
-import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { BarChart3 } from "lucide-react";
 
 const CAT_COLORS: Record<string, string> = {
@@ -17,7 +28,10 @@ export function Analytics() {
   const weekly = useMemo(() => totalByDay(state.activities, 7), [state.activities]);
   const monthly = useMemo(() => totalByDay(state.activities, 30), [state.activities]);
   const cats = useMemo(() => totalByCategory(state.activities), [state.activities]);
-  const top = useMemo(() => [...state.activities].sort((a, b) => b.co2eKg - a.co2eKg).slice(0, 8), [state.activities]);
+  const top = useMemo(
+    () => [...state.activities].sort((a, b) => b.co2eKg - a.co2eKg).slice(0, 8),
+    [state.activities],
+  );
   const empty = state.activities.length === 0;
 
   return (
@@ -34,7 +48,8 @@ export function Analytics() {
           </div>
           <div className="mt-3 text-sm font-semibold text-foreground">No data to analyze yet</div>
           <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">
-            Log a few activities and your weekly trend, category breakdown, and top emitters will populate here automatically.
+            Log a few activities and your weekly trend, category breakdown, and top emitters will
+            populate here automatically.
           </p>
         </Card>
       )}
@@ -47,7 +62,13 @@ export function Analytics() {
               <BarChart data={weekly}>
                 <XAxis dataKey="label" stroke="#64748b" fontSize={11} />
                 <YAxis stroke="#64748b" fontSize={11} />
-                <Tooltip contentStyle={{ background: "#0B132B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }} />
+                <Tooltip
+                  contentStyle={{
+                    background: "#0B132B",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 8,
+                  }}
+                />
                 <Bar dataKey="total" fill="#10B981" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -59,10 +80,25 @@ export function Analytics() {
           <div className="h-60">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={cats} dataKey="value" nameKey="name" innerRadius={50} outerRadius={90} paddingAngle={3}>
-                  {cats.map((c) => <Cell key={c.name} fill={CAT_COLORS[c.name]} />)}
+                <Pie
+                  data={cats}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={50}
+                  outerRadius={90}
+                  paddingAngle={3}
+                >
+                  {cats.map((c) => (
+                    <Cell key={c.name} fill={CAT_COLORS[c.name]} />
+                  ))}
                 </Pie>
-                <Tooltip contentStyle={{ background: "#0B132B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }} />
+                <Tooltip
+                  contentStyle={{
+                    background: "#0B132B",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 8,
+                  }}
+                />
                 <Legend wrapperStyle={{ fontSize: 11, color: "#94a3b8" }} />
               </PieChart>
             </ResponsiveContainer>
@@ -77,7 +113,13 @@ export function Analytics() {
             <BarChart data={monthly}>
               <XAxis dataKey="date" stroke="#64748b" fontSize={10} interval={2} />
               <YAxis stroke="#64748b" fontSize={11} />
-              <Tooltip contentStyle={{ background: "#0B132B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }} />
+              <Tooltip
+                contentStyle={{
+                  background: "#0B132B",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 8,
+                }}
+              />
               <Bar dataKey="total" fill="#34D399" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -91,12 +133,26 @@ export function Analytics() {
         ) : (
           <ul className="space-y-2">
             {top.map((a) => (
-              <li key={a.id} className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">
+              <li
+                key={a.id}
+                className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2"
+              >
                 <div className="flex items-center gap-3">
-                  <span className="text-lg">{({ transport: "🚗", diet: "🥗", energy: "💡", shopping: "🛍️" } as Record<string, string>)[a.category]}</span>
+                  <span className="text-lg">
+                    {
+                      (
+                        { transport: "🚗", diet: "🥗", energy: "💡", shopping: "🛍️" } as Record<
+                          string,
+                          string
+                        >
+                      )[a.category]
+                    }
+                  </span>
                   <div>
                     <div className="text-sm text-foreground">{a.label}</div>
-                    <div className="text-[11px] text-muted-foreground">{new Date(a.timestamp).toLocaleDateString()}</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {new Date(a.timestamp).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
                 <div className="text-sm font-medium text-rose-300">{a.co2eKg.toFixed(2)} kg</div>

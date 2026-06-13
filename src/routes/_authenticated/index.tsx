@@ -25,7 +25,11 @@ export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "EcoPulse AI — Carbon Footprint Awareness Platform" },
-      { name: "description", content: "Track, gamify, and reduce your carbon footprint with AI-powered logging, eco-quests, and global leaderboards." },
+      {
+        name: "description",
+        content:
+          "Track, gamify, and reduce your carbon footprint with AI-powered logging, eco-quests, and global leaderboards.",
+      },
     ],
   }),
   component: App,
@@ -43,7 +47,11 @@ function App() {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) return;
-      const { data: p } = await supabase.from("profiles").select("full_name, avatar").eq("id", u.user.id).maybeSingle();
+      const { data: p } = await supabase
+        .from("profiles")
+        .select("full_name, avatar")
+        .eq("id", u.user.id)
+        .maybeSingle();
       if (p) updateProfile({ name: p.full_name || "Eco Explorer", avatar: p.avatar || "🌱" });
 
       try {
@@ -52,7 +60,9 @@ function App() {
           localStorage.setItem(key, "1");
           send({ data: { kind: "welcome" } }).catch(() => {});
         }
-      } catch {}
+      } catch {
+        // ignore welcome-email bootstrap failures
+      }
     })();
   }, [updateProfile, send]);
 
@@ -61,8 +71,13 @@ function App() {
     const id = state.pendingUnlocks[0];
     if (!id) return;
     const meta = badgeMeta(id);
-    if (!meta) { acknowledgeUnlock(); return; }
-    send({ data: { kind: "badge_unlocked", data: { name: meta.name, description: meta.description } } }).catch(() => {});
+    if (!meta) {
+      acknowledgeUnlock();
+      return;
+    }
+    send({
+      data: { kind: "badge_unlocked", data: { name: meta.name, description: meta.description } },
+    }).catch(() => {});
     // Don't auto-acknowledge — dialog will when user dismisses
   }, [state.pendingUnlocks, send, acknowledgeUnlock]);
 
@@ -74,7 +89,12 @@ function App() {
       </div>
 
       <div className="relative flex w-full">
-        <Sidebar active={view} onChange={setView} onSettings={() => setProfile(true)} onSubmission={() => setSubmission(true)} />
+        <Sidebar
+          active={view}
+          onChange={setView}
+          onSettings={() => setProfile(true)}
+          onSubmission={() => setSubmission(true)}
+        />
         <main className="flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10">
           <div className="mx-auto max-w-6xl">
             {view === "dashboard" && <Dashboard />}

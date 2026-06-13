@@ -71,34 +71,34 @@ src/
 
 ## Authentication & security
 
-* Email verification is **mandatory** before sign-up succeeds.
-* Auth state lives in Supabase; the browser client persists session in
+- Email verification is **mandatory** before sign-up succeeds.
+- Auth state lives in Supabase; the browser client persists session in
   `localStorage`. Protected routes are gated by the integration-managed
   `_authenticated/route.tsx` (`ssr: false`).
-* Every public table has Row-Level Security enabled and uses the
+- Every public table has Row-Level Security enabled and uses the
   `has_role(uuid, app_role)` security-definer function to avoid
   recursive policies. See `supabase/migrations/`.
-* `SUPABASE_SERVICE_ROLE_KEY` is server-only and never imported into
+- `SUPABASE_SERVICE_ROLE_KEY` is server-only and never imported into
   client-reachable modules.
 
 ## Quality gates
 
-* **Static**: `bun run lint` (ESLint + Prettier), `bun run typecheck`
+- **Static**: `bun run lint` (ESLint + Prettier), `bun run typecheck`
   (`tsc --noEmit`, strict mode).
-* **Tests**: `bun run test:coverage` (Vitest 4 + jsdom + Testing Library)
+- **Tests**: `bun run test:coverage` (Vitest 4 + jsdom + Testing Library)
   with co-located `*.test.ts`. See [`TESTING.md`](./TESTING.md).
-* **CI**: GitHub Actions runs lint → typecheck → tests with coverage on
+- **CI**: GitHub Actions runs lint → typecheck → tests with coverage on
   every push and PR to `main`
   ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).
 
 ## Extending the system
 
-* **New emission factor** → add to `TRANSPORT_EF` / `DIET_EF` in
+- **New emission factor** → add to `TRANSPORT_EF` / `DIET_EF` in
   `calc.ts`, add a test case in `calc.test.ts`.
-* **New badge** → add a `BadgeMeta` entry to `BADGE_REGISTRY` and drop a
+- **New badge** → add a `BadgeMeta` entry to `BADGE_REGISTRY` and drop a
   PNG into `src/assets/badges/`. The evaluator picks it up automatically;
   add a test in `badges.test.ts`.
-* **New notification type** → extend the `kind` union in
+- **New notification type** → extend the `kind` union in
   `email.functions.ts` and add a branded HTML template.
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for branch/PR conventions and

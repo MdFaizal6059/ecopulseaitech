@@ -92,33 +92,162 @@ export function calcBaseline(
 const id = () => Math.random().toString(36).slice(2, 10);
 
 export function labelMode(m: TransportMode): string {
-  return { ev: "EV drive", ice: "car drive", public: "transit", bike: "cycling", walk: "walking" }[m];
+  return { ev: "EV drive", ice: "car drive", public: "transit", bike: "cycling", walk: "walking" }[
+    m
+  ];
 }
 export function labelDiet(d: DietType): string {
-  return { vegan: "Vegan", vegetarian: "Vegetarian", "low-meat": "Low-meat", "heavy-meat": "Heavy-meat" }[d];
+  return {
+    vegan: "Vegan",
+    vegetarian: "Vegetarian",
+    "low-meat": "Low-meat",
+    "heavy-meat": "Heavy-meat",
+  }[d];
 }
 
 export function defaultQuests(): Quest[] {
   return [
-    { id: "q1", title: "Meatless Monday", description: "Log a vegan or vegetarian meal today", cadence: "daily", xp: 50, credits: 20, target: 1, progress: 0, completed: false, icon: "🥗" },
-    { id: "q2", title: "Zero-Emission Commute", description: "Take 3 bike/walk/transit trips this week", cadence: "weekly", xp: 150, credits: 60, target: 3, progress: 0, completed: false, icon: "🚲" },
-    { id: "q3", title: "Phantom Power Purge", description: "Stay under 8 kWh for 5 days", cadence: "weekly", xp: 200, credits: 80, target: 5, progress: 0, completed: false, icon: "🔌" },
-    { id: "q4", title: "EV Evangelist", description: "Log 10 EV/transit trips this month", cadence: "monthly", xp: 400, credits: 200, target: 10, progress: 0, completed: false, icon: "⚡" },
-    { id: "q5", title: "Hydro Hero", description: "Cut water usage 3 days in a row", cadence: "weekly", xp: 120, credits: 40, target: 3, progress: 0, completed: false, icon: "💧" },
-    { id: "q6", title: "Solar Sovereign", description: "30 days of below-baseline emissions", cadence: "monthly", xp: 800, credits: 400, target: 30, progress: 0, completed: false, icon: "☀️" },
+    {
+      id: "q1",
+      title: "Meatless Monday",
+      description: "Log a vegan or vegetarian meal today",
+      cadence: "daily",
+      xp: 50,
+      credits: 20,
+      target: 1,
+      progress: 0,
+      completed: false,
+      icon: "🥗",
+    },
+    {
+      id: "q2",
+      title: "Zero-Emission Commute",
+      description: "Take 3 bike/walk/transit trips this week",
+      cadence: "weekly",
+      xp: 150,
+      credits: 60,
+      target: 3,
+      progress: 0,
+      completed: false,
+      icon: "🚲",
+    },
+    {
+      id: "q3",
+      title: "Phantom Power Purge",
+      description: "Stay under 8 kWh for 5 days",
+      cadence: "weekly",
+      xp: 200,
+      credits: 80,
+      target: 5,
+      progress: 0,
+      completed: false,
+      icon: "🔌",
+    },
+    {
+      id: "q4",
+      title: "EV Evangelist",
+      description: "Log 10 EV/transit trips this month",
+      cadence: "monthly",
+      xp: 400,
+      credits: 200,
+      target: 10,
+      progress: 0,
+      completed: false,
+      icon: "⚡",
+    },
+    {
+      id: "q5",
+      title: "Hydro Hero",
+      description: "Cut water usage 3 days in a row",
+      cadence: "weekly",
+      xp: 120,
+      credits: 40,
+      target: 3,
+      progress: 0,
+      completed: false,
+      icon: "💧",
+    },
+    {
+      id: "q6",
+      title: "Solar Sovereign",
+      description: "30 days of below-baseline emissions",
+      cadence: "monthly",
+      xp: 800,
+      credits: 400,
+      target: 30,
+      progress: 0,
+      completed: false,
+      icon: "☀️",
+    },
   ];
 }
 
 export function defaultRewards(): Reward[] {
   return [
-    { id: "r1", name: "EcoPulse Sticker Pack", description: "Premium die-cut vinyl stickers", cost: 100, emoji: "🪧", category: "gear" },
-    { id: "r2", name: "Bamboo Notebook", description: "Carbon-neutral developer journal", cost: 300, emoji: "📓", category: "gear" },
-    { id: "r3", name: "Organic Cotton Tee", description: "EcoPulse signature tee", cost: 800, emoji: "👕", category: "gear" },
-    { id: "r4", name: "Plant a Tree", description: "We plant a real tree in your name", cost: 250, emoji: "🌳", category: "donation" },
-    { id: "r5", name: "10 Trees Bundle", description: "Reforest a small patch", cost: 2000, emoji: "🌲", category: "donation" },
-    { id: "r6", name: "Allbirds 15% Off", description: "Discount code for sustainable shoes", cost: 500, emoji: "👟", category: "discount" },
-    { id: "r7", name: "Patagonia 10% Off", description: "Outdoor gear discount", cost: 600, emoji: "🧥", category: "discount" },
-    { id: "r8", name: "Tesla Supercharge Credit", description: "$10 charging credit", cost: 1500, emoji: "⚡", category: "discount" },
+    {
+      id: "r1",
+      name: "EcoPulse Sticker Pack",
+      description: "Premium die-cut vinyl stickers",
+      cost: 100,
+      emoji: "🪧",
+      category: "gear",
+    },
+    {
+      id: "r2",
+      name: "Bamboo Notebook",
+      description: "Carbon-neutral developer journal",
+      cost: 300,
+      emoji: "📓",
+      category: "gear",
+    },
+    {
+      id: "r3",
+      name: "Organic Cotton Tee",
+      description: "EcoPulse signature tee",
+      cost: 800,
+      emoji: "👕",
+      category: "gear",
+    },
+    {
+      id: "r4",
+      name: "Plant a Tree",
+      description: "We plant a real tree in your name",
+      cost: 250,
+      emoji: "🌳",
+      category: "donation",
+    },
+    {
+      id: "r5",
+      name: "10 Trees Bundle",
+      description: "Reforest a small patch",
+      cost: 2000,
+      emoji: "🌲",
+      category: "donation",
+    },
+    {
+      id: "r6",
+      name: "Allbirds 15% Off",
+      description: "Discount code for sustainable shoes",
+      cost: 500,
+      emoji: "👟",
+      category: "discount",
+    },
+    {
+      id: "r7",
+      name: "Patagonia 10% Off",
+      description: "Outdoor gear discount",
+      cost: 600,
+      emoji: "🧥",
+      category: "discount",
+    },
+    {
+      id: "r8",
+      name: "Tesla Supercharge Credit",
+      description: "$10 charging credit",
+      cost: 1500,
+      emoji: "⚡",
+      category: "discount",
+    },
   ];
 }
 
